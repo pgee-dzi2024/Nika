@@ -19,7 +19,7 @@
                                 class="feather-sidebar left"></i></button>
                                 </div>
                                 <div class="logo">
-                                    <a href="{% url 'dzi_home' %}">
+                                    <a href="{% url 'home' %}">
                                         <img class="logo-light" src="{% static 'assets/images/logo/logo.png' %}" alt="Corporate Logo">
                                         <img class="logo-dark" src="{% static 'assets/images/logo/logo-dark.png' %}" alt="Corporate Logo">
                                     </a>
@@ -31,18 +31,18 @@
                                 <nav class="mainmenu-nav d-none d-lg-block text-center">
                                     <!-- Точки на главното меню -->
                                     <ul class="mainmenu">
-                                        <li><a href="{% url 'dzi_home' %}">Начало</a></li>
-                                        <li><a href="{% url 'dzi_tests' %}">Тест</a></li>
-                                        <li v-if="user.user_level_num<5"><a href="{% url 'dzi_tasks' %}">Въпроси</a></li>
-                                        <li v-if="user.user_level_num<5"><a href="{% url 'dzi_users' %}">Потребители</a></li>
-                                        <li v-if="user.user_level_num<5"><a href="{% url 'dzi_sys' %}">Системни данни</a></li>
-                                        <li><a href="{% url 'dzi_settings' %}">Документи</a></li>
-                                        <li v-if="user.user_level_num<5"><a href="{% url 'dzi_settings' %}">Настройки</a></li>
+                                        <li><a href="{% url 'home' %}">Начало</a></li>
+                                        <li><a href="{% url 'home' %}">Тест</a></li>
+                                        <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Въпроси</a></li>
+                                        <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Потребители</a></li>
+                                        <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Системни данни</a></li>
+                                        <li><a href="{% url 'home' %}">Документи</a></li>
+                                        <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Настройки</a></li>
                                     </ul>
                                 </nav>
 
                                 <div class="header-btn d-none d-md-block">
-                                    <a class="btn-default btn-small round" href="{% url 'logout' %}">
+                                    <a class="btn-default btn-small round" href="{% url 'home' %}">
                                         Изход  <i class="feather-zap"></i>
                                     </a>
                                 </div>
@@ -67,7 +67,7 @@
                 <div class="inner-popup">
                     <div class="header-top">
                         <div class="logo">
-                            <a href="{% url 'dzi_home' %}">
+                            <a href="{% url 'home' %}">
                                 <img class="logo-light" src="{% static 'assets/images/logo/logo.png' %}" alt="Corporate Logo">
                                 <img class="logo-dark" src="{% static 'assets/images/logo/logo-dark.png' %}" alt="Corporate Logo">
                             </a>
@@ -81,12 +81,12 @@
 
                     <div class="content">
                         <ul class="mainmenu">
-                            <li><a href="{% url 'dzi_home' %}">Начало</a></li>
-                            <li><a href="{% url 'dzi_tests' %}">Тест</a></li>
-                            <li v-if="user.user_level_num<5"><a href="{% url 'dzi_tasks' %}">Въпроси</a></li>
-                            <li v-if="user.user_level_num<5"><a href="{% url 'dzi_users' %}">Потребители</a></li>
-                            <li v-if="user.user_level_num<5"><a href="{% url 'dzi_sys' %}">Системни данни</a></li>
-                            <li v-if="user.user_level_num<5"><a href="{% url 'dzi_settings' %}">Настройки</a></li>
+                            <li><a href="{% url 'home' %}">Начало</a></li>
+                            <li><a href="{% url 'home' %}">Тест</a></li>
+                            <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Въпроси</a></li>
+                            <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Потребители</a></li>
+                            <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Системни данни</a></li>
+                            <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Настройки</a></li>
                         </ul>
 
                         <div class="rbt-sm-separator"></div>
@@ -94,7 +94,7 @@
 
                     <!-- Start Header Btn  -->
                     <div class="header-btn d-block d-md-none">
-                        <a class="btn-default @@btnClass" href="{% url 'logout' %}">
+                        <a class="btn-default @@btnClass" href="{% url 'home' %}">
                                         Изход  <i class="feather-zap"></i></a>
                     </div>
                     <!-- End Header Btn  -->
@@ -133,9 +133,10 @@
         </div>
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{% static 'assets/js/vendor/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/vue.global.prod.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/axios.min.js' %}"></script>
+
 {% block page_script %}
     <!-- място за локалните скриптове -->
 {% endblock %}
