@@ -31,21 +31,12 @@
                                 <nav class="mainmenu-nav d-none d-lg-block text-center">
                                     <!-- Точки на главното меню -->
                                     <ul class="mainmenu">
-                                        <li><a href="{% url 'home' %}">Начало</a></li>
-                                        <li><a href="{% url 'home' %}">Тест</a></li>
-                                        <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Въпроси</a></li>
-                                        <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Потребители</a></li>
-                                        <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Системни данни</a></li>
-                                        <li><a href="{% url 'home' %}">Документи</a></li>
-                                        <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Настройки</a></li>
+                                        <li><a @click="showMode = 0">Регистрация</a></li>
+                                        <li><a @click="showMode = 1">Старт</a></li>
+                                        <li><a @click="showMode = 2">Състезание</a></li>
+                                        <li><a @click="showMode = 3">Класиране</a></li>
                                     </ul>
                                 </nav>
-
-                                <div class="header-btn d-none d-md-block">
-                                    <a class="btn-default btn-small round" href="{% url 'home' %}">
-                                        Изход  <i class="feather-zap"></i>
-                                    </a>
-                                </div>
 
                                 <!-- Start Mobile-Menu-Bar -->
                                 <div class="mobile-menu-bar mr--10 ml--10 d-block d-lg-none">
@@ -81,23 +72,13 @@
 
                     <div class="content">
                         <ul class="mainmenu">
-                            <li><a href="{% url 'home' %}">Начало</a></li>
-                            <li><a href="{% url 'home' %}">Тест</a></li>
-                            <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Въпроси</a></li>
-                            <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Потребители</a></li>
-                            <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Системни данни</a></li>
-                            <li v-if="user.user_level_num<5"><a href="{% url 'home' %}">Настройки</a></li>
+                            <li><a href="{% url 'home' %}">Регистрация</a></li>
+                            <li><a href="{% url 'home' %}">Старт</a></li>
+                            <li ><a href="{% url 'home' %}">Състезание</a></li>
+                            <li ><a href="{% url 'home' %}">Класиране</a></li>
                         </ul>
-
                         <div class="rbt-sm-separator"></div>
                     </div>
-
-                    <!-- Start Header Btn  -->
-                    <div class="header-btn d-block d-md-none">
-                        <a class="btn-default @@btnClass" href="{% url 'home' %}">
-                                        Изход  <i class="feather-zap"></i></a>
-                    </div>
-                    <!-- End Header Btn  -->
                 </div>
             </div>
 

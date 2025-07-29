@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import *
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', index, name='home'),
+    path('api/sysparams/', SysParamListView.as_view(), name='sysparam-list'),
 ]
