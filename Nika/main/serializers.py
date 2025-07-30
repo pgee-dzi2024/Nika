@@ -16,7 +16,12 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class AthleteSerializer(serializers.ModelSerializer):
     group = GroupSerializer(read_only=True)
+    group_id = serializers.PrimaryKeyRelatedField(
+        queryset=Group.objects.all(),
+        source='group',
+        write_only=True
+    )
 
     class Meta:
         model = Athlete
-        fields = ['id', 'name', 'bib_number', 'result_time', 'group']
+        fields = ['id', 'name', 'bib_number', 'result_time', 'group', 'group_id']

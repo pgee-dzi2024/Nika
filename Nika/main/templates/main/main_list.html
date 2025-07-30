@@ -46,47 +46,47 @@
 
                     <!-- Dashboard Center Content -->
                     <div class="rbt-dashboard-content">
-                        <div class="content-page">
+                        <div v-if="sysParams.showMode==0" class="content-page">
                             <!-- --------------------- -->
                             <!--      Регистрация      -->
                             <!-- --------------------- -->
                             <div class="chat-box-list pt--30">
                                 <!-- списък на участниците -->
-                                <div v-for="(user_obj, user_idx) in listOfUsers">
+                                <div v-for="(athlete, athlete_idx) in startList">
                                     <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
-                                         v-if="((user_obj.userprofile.access_level == 3)&&
-                                                (user_obj.userprofile.school==user.school))"
-                                         :id="'usr'+user_idx">
-                                        <!-- показвам всички въпроси от тема/точка/ниво (theme/item/level) qst -->
+                                         :id="'athlete'+athlete_idx">
+                                        <!-- показвам всички участници -->
                                         <div class="inner top-flashlight leftside light-xl">
                                             <!-- Заглавна част - параметри на въпроса -->
                                             <div class="chat-section generate-section">
-                                                <div class="chat-content">
+                                                <div class="chat-content" style="max-width: 100%;">
                                                     <div class="row">
-                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-12">
+                                                        <div class="col-lg-1 col-md-1 col-sm-6 col-2">
+                                                            <h5 class="title">
+                                                                [[ athlete.bib_number ]]
+                                                            </h5>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-10">
                                                             <h6 class="title">
-                                                                [[ user_obj.first_name ]]  [[ user_obj.last_name ]] ([[ user_obj.username ]])
+                                                                [[ athlete.name ]]
                                                             </h6>
                                                         </div>
+                                                        <div class="col-lg-5 col-md-5 col-sm-5 col-12">
+                                                            [[ athlete.group.name ]] ([[ athlete.group.comment ]])
+
+                                                        </div>
                                                         <!-- copy -->
-                                                        <div class="col-lg-6 col-md-6 col-sm-6 col-12 d-flex justify-content-end">
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-12 d-flex justify-content-end">
                                                             <button class="react-btn btn-default btn-small btn-border"
                                                                     style="font-size: 12px; color: red; border-color: #5c0000d4;"
-                                                                    @click="editUser(user_idx)"
-                                                                    data-bs-toggle="modal" data-bs-target="#deleteUserModal">
+                                                                    @click="editAthlete(athlete_idx)"
+                                                                    data-bs-toggle="modal" data-bs-target="#deleteAthleteModal">
                                                                 <i class="feather-user-x"></i><span>&nbsp;Премахни&nbsp;</span>
                                                             </button>
                                                             &nbsp;&nbsp;
                                                             <button class="react-btn btn-default btn-small btn-border"
-                                                                    @click="editUser(user_idx)"
-                                                                    data-bs-toggle="modal" data-bs-target="#setUserPasswordModal"
-                                                                    style="font-size: 12px; color: #0600ff; border-color: rgb(10 88 202 / 29%);">
-                                                                <i class="feather-user-check"></i><span>&nbsp;Парола&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                                            </button>
-                                                            &nbsp;&nbsp;
-                                                            <button class="react-btn btn-default btn-small btn-border"
-                                                                    @click="editUser(user_idx)"
-                                                                    data-bs-toggle="modal" data-bs-target="#editUserModal"
+                                                                    @click="editAthlete(athlete_idx)"
+                                                                    data-bs-toggle="modal" data-bs-target="#editAthleteModal"
                                                                     style="font-size: 12px; color: green; border-color: #013401;">
                                                                 <i class="feather-edit"></i><span>&nbsp;Данни&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                                                             </button>
@@ -104,11 +104,12 @@
                             <!-- --------------------- -->
                             <!--      Регистрация      -->
                             <!-- --------------------- -->
-                            <ul  v-if="sysParams.showMode==0" class="staticbar-btn-grp d-md-flex">
+                            <ul v-if="sysParams.showMode==0" class="staticbar-btn-grp d-md-flex">
                                 <li>
                                     <button class="react-btn btn-default btn-small btn-border"
                                             style="color: green; border-color: #013401;"
-                                            data-bs-toggle="modal" data-bs-target="#editAthleteModal">
+                                            data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                            @click="newAthlete()">
                                         <i class="feather-check"></i><span>&nbspДобави нов участник</span>
                                     </button>
                                 </li>
@@ -143,101 +144,16 @@
                     <!--      Регистрация      -->
                     <!-- --------------------- -->
                     <div  v-if="sysParams.showMode==0" class="rbt-right-side-panel popup-dashboardright-section">
-
                         <div class="right-side-top">
                             <h6 class="title">Регистрирани участници:</h6>
-                            <p>общо [[ athletes.length ]]</p>
+                            <p>общо [[ startList.length ]]</p>
                         </div>
                         <div class="right-side-bottom mb--200">
+                            <h6 class="title">По категории:</h6>
                             <div class="chat-history-section"
-                                 v-for="(theme_item, idx) in theme">
-                                <h6 class="title">[[theme_item.item]]. [[theme_item.title]]</h6>
-                                <ul class="chat-history-list">
-                                    <li class="history-box active">
-                                        <div class="dropdown history-box-dropdown">
-                                            <button type="button" class="more-info-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="feather-more-horizontal"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       @click="make_new_q(theme_item.id, 1)"
-                                                       data-bs-toggle="modal" data-bs-target="#editQuestionModal">
-                                                    <i class="feather-file-plus"></i> Добави</a>
-                                                </li>
-                                                <li><a class="dropdown-item" :href="'#T'+idx+'L1'"><i class="feather-corner-up-left"></i> Покажи</a></li>
-                                            </ul>
-                                        </div>
-                                        Знание
-                                        <span :class="{'bg-color-good': verifyQuestionQty(1, idx, 3),
-                                                       'bg-color-mid': verifyQuestionQty(1, idx, 2),
-                                                       'bg-color-bad': verifyQuestionQty(1, idx, 1),
-                                                      }">
-                                            &nbsp;[[theme_item.q_knowledge]] (мин.[[theme_item.knowledge]])&nbsp; </span>
-                                    </li>
-                                    <li class="history-box active">
-                                        <div class="dropdown history-box-dropdown">
-                                            <button type="button" class="more-info-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="feather-more-horizontal"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       @click="make_new_q(theme_item.id, 2)"
-                                                       data-bs-toggle="modal" data-bs-target="#editQuestionModal">
-                                                    <i class="feather-file-plus"></i> Добави</a>
-                                                </li>
-                                                <li><a class="dropdown-item" :href="'#T'+idx+'L2'"><i class="feather-corner-up-left"></i> Покажи</a></li>
-                                            </ul>
-                                        </div>
-                                        Разбиране
-                                        <span  :class="{'bg-color-good': verifyQuestionQty(2, idx, 3),
-                                                       'bg-color-mid': verifyQuestionQty(2, idx, 2),
-                                                       'bg-color-bad': verifyQuestionQty(2, idx, 1),
-                                                       }">
-                                            &nbsp;[[theme_item.q_comprehension]] (мин.[[theme_item.comprehension]])&nbsp; </span>
-                                    </li>
-                                    <li class="history-box active">
-                                        <div class="dropdown history-box-dropdown">
-                                            <button type="button" class="more-info-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="feather-more-horizontal"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       @click="make_new_q(theme_item.id, 3)"
-                                                       data-bs-toggle="modal" data-bs-target="#editQuestionModal">
-                                                    <i class="feather-file-plus"></i> Добави</a>
-                                                </li>
-                                                <li><a class="dropdown-item" :href="'#T'+idx+'L3'"><i class="feather-corner-up-left"></i> Покажи</a></li>
-                                            </ul>
-                                        </div>
-                                        Приложение
-                                        <span :class="{'bg-color-good': verifyQuestionQty(3, idx, 3),
-                                                       'bg-color-mid': verifyQuestionQty(3, idx, 2),
-                                                       'bg-color-bad': verifyQuestionQty(3, idx, 1),
-                                                       }">
-                                            &nbsp;[[theme_item.q_application]] (мин.[[theme_item.application]])&nbsp; </span>
-                                    </li>
-                                    <li class="history-box active">
-                                        <div class="dropdown history-box-dropdown">
-                                            <button type="button" class="more-info-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="feather-more-horizontal"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
-                                                <li><a class="dropdown-item"
-                                                       @click="make_new_q(theme_item.id, 4)"
-                                                       data-bs-toggle="modal" data-bs-target="#editQuestionModal">
-                                                    <i class="feather-file-plus"></i> Добави</a>
-                                                </li>
-                                                <li><a class="dropdown-item" :href="'#T'+idx+'L4'"><i class="feather-corner-up-left"></i> Покажи</a></li>
-                                            </ul>
-                                        </div>
-                                        Анализ
-                                        <span  :class="{'bg-color-good': verifyQuestionQty(4, idx, 3),
-                                                       'bg-color-mid': verifyQuestionQty(4, idx, 2),
-                                                       'bg-color-bad': verifyQuestionQty(4, idx, 1),
-                                                       }">
-                                            &nbsp;[[theme_item.q_analysis]] (мин.[[theme_item.analysis]])&nbsp; </span>
-                                    </li>
-                                </ul>
+                                 v-for="(group, idx) in groupsList">
+                                <h6 class="title">[[group.name]]</h6>
+                                <p>Регистрирани участници: [[ countAthletesInGroup(group.id) ]]</p>
                             </div>
                         </div>
                     </div>
@@ -250,8 +166,35 @@
         <div id="editAthleteModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content wrapper top-flashlight leftside light-xl">
-                    <h5 class="title">
-                        Нов участник</h5>
+                    <h5 class="title" v-if="c_athlete.id==0">Нов участник</h5>
+                    <h5 class="title" v-else>Редактиране на данни за участник</h5>
+                    <!-- Име и фамилия -->
+                    <div class="row">
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-12">
+                            <button type="button" class="react-btn btn-default btn-small btn-border dropdown-toggle"
+                                    data-bs-toggle="dropdown" aria-expanded="false" >
+                                Група/категория: [[c_athlete.group.name]] ([[c_athlete.group.comment]]) <i class="feather-more-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li v-for="(group, group_idx) in groupsList">
+                                    <a class="dropdown-item color-level-1" @click="changeGroup(group_idx)">[[group.name]] ([[group.comment]])</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-4 col-md-4 col-sm-12 col-4">
+                            <label for="editBibNumber">Стартов номер: </label>
+                            <input type="text" class="form-control"
+                                   id="editBibNumber" maxlength="20" size="20" v-model="c_athlete.bib_number">
+                        </div>
+                        <div class="form-group col-lg-8 col-md-8 col-sm-12 col-8">
+                            <label for="editAthleteName">Име и фамилия: </label>
+                            <input type="text" class="form-control"
+                                   id="editAthleteName" maxlength="20" size="20" v-model="c_athlete.name">
+                        </div>
+                    </div>
+
                     <!-- бутон горе ляво - затваряне на прозореца -->
                     <button class="close-button" data-bs-dismiss="modal">
                        <i class="feather-x"></i>
@@ -268,7 +211,7 @@
                                 </button>
                                 &nbsp
                                 <button class="react-btn btn-default btn-small btn-border bg-color-success"
-                                       data-bs-dismiss="modal" @click="saveUserLogic()">
+                                       data-bs-dismiss="modal" @click="saveAthlete()">
                                    <i class="feather-check"></i><span>&nbsp;Запази</span>
                                 </button>
                             </div>
@@ -277,6 +220,34 @@
                 </div>
             </div>
        </div>
+        <!-- Диалог за изтриване на състезател -->
+        <div id="deleteAthleteModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content wrapper top-flashlight leftside light-xl">
+                    <button class="close-button" data-bs-dismiss="modal">
+                        <i class="feather-x"></i>
+                    </button>
+                    <h5 class="title a">ВНИМАНИЕ!</h5>
+                    <p style="display: flex; align-items: center;">Участник [[ c_athlete.name ]] и ВСИЧКИ свъразани с него данни ще бъдат премахнати от
+                        базата данни. Моля, потвърдете!</p>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-12"  style="text-align: right;">
+                            <button class="react-btn btn-default btn-small btn-border bg-color-success"
+                                   data-bs-dismiss="modal">
+                               <i class="feather-x"></i><span>&nbsp;Откажи</span>
+                            </button>
+                            &nbsp
+                            <button class="react-btn btn-default btn-small btn-border bg-color-danger"
+                                    data-bs-dismiss="modal"
+                                    @click="deleteAthlete()">
+                               <i class="feather-check"></i><span>&nbsp;Изтрий</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 {% endblock %}
 
 {% block page_script %}

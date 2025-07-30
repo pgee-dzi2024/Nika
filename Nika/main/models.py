@@ -42,14 +42,14 @@ class Group(models.Model):
 ***************************************
 """
 class Athlete(models.Model):
-    name = models.CharField('Athlete Name', max_length=60)
-    bib_number = models.CharField('Bib Number', max_length=10)
-    result_time = models.DurationField('Result Time', null=True, blank=True)
+    name = models.CharField('Име на състезателя', max_length=60)
+    bib_number = models.CharField('Стартов номер', max_length=10)
+    result_time = models.DurationField('Време', null=True, blank=True)
     group = models.ForeignKey(
         Group,
         on_delete=models.PROTECT,   # За да не се позволи изтриване на ползвана група
         related_name='athletes',
-        verbose_name='Group/Category'
+        verbose_name='Група/категория'
     )
 
     def __str__(self):

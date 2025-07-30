@@ -16,6 +16,16 @@ class SysParamListView(generics.ListCreateAPIView):
     serializer_class = SysParamSerializer
 
 
-class AthleteListView(generics.ListAPIView):
+class GroupListView(generics.ListCreateAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+
+class AthleteListView(generics.ListCreateAPIView):
+    queryset = Athlete.objects.all().order_by('bib_number')
+    serializer_class = AthleteSerializer
+
+
+class AthleteDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Athlete.objects.all()
     serializer_class = AthleteSerializer
