@@ -14,3 +14,8 @@ def index(request):
 class SysParamListView(generics.ListCreateAPIView):
     queryset = SysParam.objects.all()
     serializer_class = SysParamSerializer
+
+
+class AthleteListView(generics.ListAPIView):
+    queryset = Athlete.objects.all()
+    serializer_class = AthleteSerializer

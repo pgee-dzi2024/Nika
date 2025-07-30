@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Време на генериране: 28 юли 2025 в 11:45
+-- Време на генериране: 30 юли 2025 в 10:45
 -- Версия на сървъра: 10.4.32-MariaDB
 -- Версия на PHP: 8.2.12
 
@@ -85,7 +85,19 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (21, 'Can add session', 6, 'add_session'),
 (22, 'Can change session', 6, 'change_session'),
 (23, 'Can delete session', 6, 'delete_session'),
-(24, 'Can view session', 6, 'view_session');
+(24, 'Can view session', 6, 'view_session'),
+(25, 'Can add Системен параметър', 7, 'add_sysparam'),
+(26, 'Can change Системен параметър', 7, 'change_sysparam'),
+(27, 'Can delete Системен параметър', 7, 'delete_sysparam'),
+(28, 'Can view Системен параметър', 7, 'view_sysparam'),
+(29, 'Can add Състезател', 8, 'add_athlete'),
+(30, 'Can change Състезател', 8, 'change_athlete'),
+(31, 'Can delete Състезател', 8, 'delete_athlete'),
+(32, 'Can view Състезател', 8, 'view_athlete'),
+(33, 'Can add Група/категория', 9, 'add_group'),
+(34, 'Can change Група/категория', 9, 'change_group'),
+(35, 'Can delete Група/категория', 9, 'delete_group'),
+(36, 'Can view Група/категория', 9, 'view_group');
 
 -- --------------------------------------------------------
 
@@ -155,6 +167,22 @@ CREATE TABLE `django_admin_log` (
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Схема на данните от таблица `django_admin_log`
+--
+
+INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
+(1, '2025-07-29 20:18:15.838212', '1', 'младежи младша възраст(12-16 г)', 1, '[{\"added\": {}}]', 9, 1),
+(2, '2025-07-29 20:18:43.761560', '2', 'младежи старша възраст(17-19 г)', 1, '[{\"added\": {}}]', 9, 1),
+(3, '2025-07-29 20:19:25.883495', '3', 'Елит(20-40 г)', 1, '[{\"added\": {}}]', 9, 1),
+(4, '2025-07-29 20:20:19.290354', '4', 'мастър Елит(41-50 г)', 1, '[{\"added\": {}}]', 9, 1),
+(5, '2025-07-29 20:20:51.404537', '5', 'Мастъри(51-60 г)', 1, '[{\"added\": {}}]', 9, 1),
+(6, '2025-07-29 20:21:24.601780', '6', 'Най-опитен планинар(61+ г)', 1, '[{\"added\": {}}]', 9, 1),
+(7, '2025-07-29 20:21:34.542669', '5', 'Мастър(51-60 г)', 2, '[{\"changed\": {\"fields\": [\"\\u0418\\u043c\\u0435 \\u043d\\u0430\\u0433\\u0440\\u0443\\u043f\\u0430\\u0442\\u0430\"]}}]', 9, 1),
+(8, '2025-07-29 20:23:02.114115', '1', 'status: 0', 1, '[{\"added\": {}}]', 7, 1),
+(9, '2025-07-29 20:26:41.633048', '2', 'competition: ТОДОРКА VERTICAL', 1, '[{\"added\": {}}]', 7, 1),
+(10, '2025-07-30 07:17:44.899215', '4', 'Мастър Елит(41-50 г)', 2, '[{\"changed\": {\"fields\": [\"\\u0418\\u043c\\u0435 \\u043d\\u0430\\u0433\\u0440\\u0443\\u043f\\u0430\\u0442\\u0430\"]}}]', 9, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -177,6 +205,9 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (2, 'auth', 'permission'),
 (4, 'auth', 'user'),
 (5, 'contenttypes', 'contenttype'),
+(8, 'main', 'athlete'),
+(9, 'main', 'group'),
+(7, 'main', 'sysparam'),
 (6, 'sessions', 'session');
 
 -- --------------------------------------------------------
@@ -214,7 +245,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (15, 'auth', '0010_alter_group_name_max_length', '2025-07-28 08:59:36.856990'),
 (16, 'auth', '0011_update_proxy_permissions', '2025-07-28 08:59:36.879992'),
 (17, 'auth', '0012_alter_user_first_name_max_length', '2025-07-28 08:59:36.910084'),
-(18, 'sessions', '0001_initial', '2025-07-28 08:59:36.966665');
+(18, 'sessions', '0001_initial', '2025-07-28 08:59:36.966665'),
+(19, 'main', '0001_initial', '2025-07-29 20:15:27.006199');
 
 -- --------------------------------------------------------
 
@@ -234,6 +266,65 @@ CREATE TABLE `django_session` (
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 ('xie79wdivtnlywfzzgajew6j30q2ira7', '.eJxVjMsOwiAQRf-FtSE8WgZcuvcbyAxMpWogKe3K-O_apAvd3nPOfYmI21ri1nmJcxZnocXpdyNMD647yHestyZTq-syk9wVedAury3z83K4fwcFe_nWwTlQqIJJARAzWJwMas8YvNdJEQViHs2ABqyGnJyhEclrmpRNMGTx_gDjjjgm:1ugJlM:1RdfDgutybsOwO4jwoLv0NKxsPGJhWc-8bR_gvqaS2E', '2025-08-11 09:03:16.705860');
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `main_athlete`
+--
+
+CREATE TABLE `main_athlete` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  `bib_number` varchar(10) NOT NULL,
+  `result_time` bigint(20) DEFAULT NULL,
+  `group_id` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `main_group`
+--
+
+CREATE TABLE `main_group` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `comment` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_group`
+--
+
+INSERT INTO `main_group` (`id`, `name`, `comment`) VALUES
+(1, 'младежи младша възраст', '12-16 г'),
+(2, 'младежи старша възраст', '17-19 г'),
+(3, 'Елит', '20-40 г'),
+(4, 'Мастър Елит', '41-50 г'),
+(5, 'Мастър', '51-60 г'),
+(6, 'Най-опитен планинар', '61+ г');
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `main_sysparam`
+--
+
+CREATE TABLE `main_sysparam` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `value` varchar(30) NOT NULL,
+  `comment` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_sysparam`
+--
+
+INSERT INTO `main_sysparam` (`id`, `name`, `value`, `comment`) VALUES
+(1, 'status', '0', 'етап от състезанието, който тече в момента'),
+(2, 'competition', 'ТОДОРКА VERTICAL', 'име на текущото състезание');
 
 --
 -- Indexes for dumped tables
@@ -313,6 +404,25 @@ ALTER TABLE `django_session`
   ADD KEY `django_session_expire_date_a5c62663` (`expire_date`);
 
 --
+-- Индекси за таблица `main_athlete`
+--
+ALTER TABLE `main_athlete`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `main_athlete_group_id_732d8675_fk_main_group_id` (`group_id`);
+
+--
+-- Индекси за таблица `main_group`
+--
+ALTER TABLE `main_group`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индекси за таблица `main_sysparam`
+--
+ALTER TABLE `main_sysparam`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -332,7 +442,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
@@ -356,19 +466,37 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `main_athlete`
+--
+ALTER TABLE `main_athlete`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `main_group`
+--
+ALTER TABLE `main_group`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `main_sysparam`
+--
+ALTER TABLE `main_sysparam`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Ограничения за дъмпнати таблици
@@ -407,6 +535,12 @@ ALTER TABLE `auth_user_user_permissions`
 ALTER TABLE `django_admin_log`
   ADD CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   ADD CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
+
+--
+-- Ограничения за таблица `main_athlete`
+--
+ALTER TABLE `main_athlete`
+  ADD CONSTRAINT `main_athlete_group_id_732d8675_fk_main_group_id` FOREIGN KEY (`group_id`) REFERENCES `main_group` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

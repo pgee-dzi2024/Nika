@@ -2,14 +2,17 @@ const App = {
     delimiters: ['[[', ']]'], // Променяме синтаксиса на [[ ]]
     data() {
         return {
-            status: 0, // 0 - преди състезанието; 1 - състезание; 2 - след състезанието
-            showMode:0, // 0 - Регистрация; 1 - Старт; 2 - Състезание; 3 - Класиране
+            sysParams: {
+                status: 0, // 0 - преди състезанието; 1 - състезание; 2 - след състезанието
+                showMode: 0, // 0 - Регистрация; 1 - Старт; 2 - Състезание; 3 - Класиране
+                },
+            athletes: [],
         }
     },
     methods: {
     closeRegistration(){
-        this.status = 1
-        this.showMode = 1
+        this.sysParams.status = 1
+        this.sysParams.showMode = 1
         this.toggleRightPanel()
         },
 
@@ -19,10 +22,36 @@ const App = {
         $(".rbt-main-content").toggleClass("area-right-expanded");
         $(".rbt-static-bar").toggleClass("area-right-expanded");
         },
+
+    loadSysParams(){
+        axios.get('/api/sysparams/')
+            .then(response => {
+                // Обхождаме всеки запис от отговора
+                response.data.forEach(param => {
+                    // За всеки създаваме променлива под sysParams с ключ - името и стойност - value
+                    this.sysParams[param.name] = param.value;
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching system parameters:', error);
+            });
+        },
+
+    loadAthletes(){
+        axios.get('/api/athletes/')
+            .then(response => {
+                // Обхождаме всеки запис от отговора
+                this.athletes = response.data
+                console.log(this.athletes.length)
+            })
+            .catch(error => {
+                console.error('Error fetching system athletes:', error);
+            });
+        },
     },
     created: function(){
-        this.status = 0
-        this.showMode = 0
+        this.loadSysParams()
+        this.loadAthletes()
     }
 }
 

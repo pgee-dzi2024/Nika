@@ -29,10 +29,10 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="breadcrumb-inner text-center">
-                                        <h1 v-if="showMode==0" class="title theme-gradient h2">Регистрация</h1>
-                                        <h1 v-if="showMode==1" class="title theme-gradient h2">Старт</h1>
-                                        <h1 v-if="showMode==2" class="title theme-gradient h2">Състезание</h1>
-                                        <h1 v-if="showMode==3" class="title theme-gradient h2">Класиране</h1>
+                                        <h1 v-if="sysParams.showMode==0" class="title theme-gradient h2">Регистрация</h1>
+                                        <h1 v-if="sysParams.showMode==1" class="title theme-gradient h2">Старт</h1>
+                                        <h1 v-if="sysParams.showMode==2" class="title theme-gradient h2">Състезание</h1>
+                                        <h1 v-if="sysParams.showMode==3" class="title theme-gradient h2">Класиране</h1>
                                     </div>
                                 </div>
                             </div>
@@ -47,33 +47,11 @@
                     <!-- Dashboard Center Content -->
                     <div class="rbt-dashboard-content">
                         <div class="content-page">
-                            <!-- Списък УЧИЛИЩНИ АДМИНИСТРАТОРИ  - ако има потребители от този тип -->
+                            <!-- --------------------- -->
+                            <!--      Регистрация      -->
+                            <!-- --------------------- -->
                             <div class="chat-box-list pt--30">
-                                <!-- Заглавна част -->
-                                <div class="chat-box author-speech bg-flashlight" style="padding-bottom: 0px;">
-                                    <div class="inner">
-                                        <div class="chat-section">
-                                            <div class="chat-content">
-                                                <h6 class="title">Списък училищни администратори</h6>
-                                                <div class="rainbow-pricing-detailed-area">
-                                                    <div class="row mb--20">
-                                                        <div class="col-lg-10 text-left">
-                                                            <p class="title w-600">Регистрирани:</p>
-                                                        </div>
-                                                        <div class="col-lg-2 text-right">
-                                                            <button class="react-btn btn-default btn-small btn-border"
-                                                                    data-bs-toggle="modal" data-bs-target="#editUserModal"
-                                                                    @click="makeNewUser(3,0)">
-                                                                    Добави нов
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- списък на потребителите в тази група(роля) -->
+                                <!-- списък на участниците -->
                                 <div v-for="(user_obj, user_idx) in listOfUsers">
                                     <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
                                          v-if="((user_obj.userprofile.access_level == 3)&&
@@ -123,12 +101,22 @@
                         </div>
                         <div class="rbt-static-bar collapse-width">
                             <!-- Долна лента с бутони  -->
-                            <ul class="staticbar-btn-grp d-md-flex">
-                                <li v-if="showMode==0">
+                            <!-- --------------------- -->
+                            <!--      Регистрация      -->
+                            <!-- --------------------- -->
+                            <ul  v-if="sysParams.showMode==0" class="staticbar-btn-grp d-md-flex">
+                                <li>
                                     <button class="react-btn btn-default btn-small btn-border"
-                                           style="color: red; border-color: #5c0000d4;" @click="closeRegistration()">
-                                       <i class="feather-x"></i><span>&nbspКрай на регистрацията</span>
-                                   </button>
+                                            style="color: green; border-color: #013401;"
+                                            data-bs-toggle="modal" data-bs-target="#editAthleteModal">
+                                        <i class="feather-check"></i><span>&nbspДобави нов участник</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="react-btn btn-default btn-small btn-border"
+                                            style="color: red; border-color: #5c0000d4;" @click="closeRegistration()">
+                                        <i class="feather-x"></i><span>&nbspКрай на регистрацията</span>
+                                    </button>
                                 </li>
                             </ul>
                             <!-- Превключвател свтла/тъмнa тема  -->
@@ -151,10 +139,14 @@
                     </div>
 
                     <!-- Dashboard Right Content -->
-                    <div  v-if="showMode==0" class="rbt-right-side-panel popup-dashboardright-section">
+                    <!-- --------------------- -->
+                    <!--      Регистрация      -->
+                    <!-- --------------------- -->
+                    <div  v-if="sysParams.showMode==0" class="rbt-right-side-panel popup-dashboardright-section">
 
                         <div class="right-side-top">
-                            <h6 class="title">Съдържание на темата:</h6>
+                            <h6 class="title">Регистрирани участници:</h6>
+                            <p>общо [[ athletes.length ]]</p>
                         </div>
                         <div class="right-side-bottom mb--200">
                             <div class="chat-history-section"
@@ -254,7 +246,37 @@
 {% endblock %}
 
 {% block modals %}
-
+        <!-- Данни за състезател -->
+        <div id="editAthleteModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content wrapper top-flashlight leftside light-xl">
+                    <h5 class="title">
+                        Нов участник</h5>
+                    <!-- бутон горе ляво - затваряне на прозореца -->
+                    <button class="close-button" data-bs-dismiss="modal">
+                       <i class="feather-x"></i>
+                   </button>
+                    <!-- footer - бутони за отказ/запис -->
+                    <div class="row mt--20">
+                       <div class="col-lg-2 col-md-2">
+                       </div>
+                        <div class="col-lg-10 col-md-10 col-sm-10 col-12" style="text-align: right;">
+                            <div class="btn-grp">
+                                <button class="react-btn btn-default btn-small btn-border bg-color-danger"
+                                       data-bs-dismiss="modal">
+                                   <i class="feather-x"></i><span>&nbsp;Откажи</span>
+                                </button>
+                                &nbsp
+                                <button class="react-btn btn-default btn-small btn-border bg-color-success"
+                                       data-bs-dismiss="modal" @click="saveUserLogic()">
+                                   <i class="feather-check"></i><span>&nbsp;Запази</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
 {% endblock %}
 
 {% block page_script %}
