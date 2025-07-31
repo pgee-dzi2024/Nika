@@ -17,7 +17,7 @@
             <!-- Main content -->
             <div class="rbt-main-content">
                 <div class="rbt-daynamic-page-content">
-                    <!-- Start Breadcarumb area  -->
+                    <!-- Start Page title  -->
                     <div class="chatenai-separator">
                         <img class="w-100 separator-dark"
                              src="{% static 'assets/images/separator/separator-top.svg' %}" alt="separator">
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- End Breadcarumb area  -->
+                    <!-- End Page title  -->
                     <div class="chatenai-separator">
                         <img class="w-100 separator-dark" src="{% static 'assets/images/separator/separator-bottom.svg' %}" alt="separator">
                         <img class="w-100 separator-light" src="{% static 'assets/images/light/separator/separator-bottom.svg' %}" alt="separator">
@@ -46,10 +46,10 @@
 
                     <!-- Dashboard Center Content -->
                     <div class="rbt-dashboard-content">
+                        <!-- --------------------- -->
+                        <!--      Регистрация      -->
+                        <!-- --------------------- -->
                         <div v-if="sysParams.showMode==0" class="content-page">
-                            <!-- --------------------- -->
-                            <!--      Регистрация      -->
-                            <!-- --------------------- -->
                             <div class="chat-box-list pt--30">
                                 <!-- списък на участниците -->
                                 <div v-for="(athlete, athlete_idx) in startList">
@@ -99,8 +99,92 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- --------------------- -->
+                        <!--         Старт         -->
+                        <!-- --------------------- -->
+                        <div v-if="sysParams.showMode==1" class="content-page">
+                            <div class="chatenai-separator">
+                                <img class="w-100 separator-dark"
+                                     src="{% static 'assets/images/separator/separator-top.svg' %}" alt="separator">
+                                <img class="w-100 separator-light"
+                                     src="{% static 'assets/images/light/separator/separator-top.svg' %}" alt="separator">
+                            </div>
+                            <div class="breadcrumb-area breadcarumb-style1 pt--30 pb--30">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="breadcrumb-inner text-center">
+                                                <h1 class="title">00:00:00:0</h1>
+                                                <button class="react-btn btn-default btn-default btn-border bg-color-danger"
+                                                        @click="startRace()">
+                                                    <i class="feather-x"></i> <span>&nbspС Т А Р Т </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chatenai-separator">
+                                <img class="w-100 separator-dark" src="{% static 'assets/images/separator/separator-bottom.svg' %}" alt="separator">
+                                <img class="w-100 separator-light" src="{% static 'assets/images/light/separator/separator-bottom.svg' %}" alt="separator">
+                            </div>
+                        </div>
+                        <!-- --------------------- -->
+                        <!--      Състезание       -->
+                        <!-- --------------------- -->
+                        <div v-if="sysParams.showMode==2" class="content-page">
+                            <div class="chat-box-list pt--30">
+                                <!-- списък на участниците -->
+                                <div v-for="(athlete, athlete_idx) in startList">
+                                    <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                         :id="'r_'+athlete.bib_number"  tabindex="-1">
+                                        <!-- показвам всички участници -->
+                                        <div class="inner top-flashlight leftside light-xl">
+                                            <!-- Заглавна част - параметри на въпроса -->
+                                            <div class="chat-section generate-section">
+                                                <div class="chat-content" style="max-width: 100%;">
+                                                    <div class="row">
+                                                        <div class="col-lg-1 col-md-1 col-sm-6 col-2">
+                                                            <h5 class="title">
+                                                                [[ athlete.bib_number ]]
+                                                            </h5>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-10">
+                                                            <h6 class="title">
+                                                                [[ athlete.name ]]
+                                                            </h6>
+                                                        </div>
+                                                        <div class="col-lg-5 col-md-5 col-sm-5 col-12">
+                                                            [[ athlete.group.name ]] ([[ athlete.group.comment ]])
+
+                                                        </div>
+                                                        <!-- copy -->
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-12 d-flex justify-content-end">
+                                                            <button class="react-btn btn-default btn-small btn-border"
+                                                                    style="font-size: 12px; color: red; border-color: #5c0000d4;"
+                                                                    @click="editAthlete(athlete_idx)"
+                                                                    data-bs-toggle="modal" data-bs-target="#deleteAthleteModal">
+                                                                <i class="feather-user-x"></i><span>&nbsp;Премахни&nbsp;</span>
+                                                            </button>
+                                                            &nbsp;&nbsp;
+                                                            <button class="react-btn btn-default btn-small btn-border"
+                                                                    @click="editAthlete(athlete_idx)"
+                                                                    data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                    style="font-size: 12px; color: green; border-color: #013401;">
+                                                                <i class="feather-edit"></i><span>&nbsp;Данни&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Долна лента с бутони  -->
                         <div class="rbt-static-bar collapse-width">
-                            <!-- Долна лента с бутони  -->
                             <!-- --------------------- -->
                             <!--      Регистрация      -->
                             <!-- --------------------- -->
@@ -117,6 +201,18 @@
                                     <button class="react-btn btn-default btn-small btn-border"
                                             style="color: red; border-color: #5c0000d4;" @click="closeRegistration()">
                                         <i class="feather-x"></i><span>&nbspКрай на регистрацията</span>
+                                    </button>
+                                </li>
+                            </ul>
+                            <!-- --------------------- -->
+                            <!--      Състезание       -->
+                            <!-- --------------------- -->
+                            <ul v-if="sysParams.showMode==2" class="staticbar-btn-grp d-md-flex">
+                                <li>
+                                    <button class="react-btn btn-default btn-small btn-border"
+                                            style="color: red; border-color: #5c0000d4;"
+                                            data-bs-toggle="modal" data-bs-target="#stopCompetitionModal">
+                                        <i class="feather-x"></i><span>&nbspКрай на състезанието</span>
                                     </button>
                                 </li>
                             </ul>
@@ -154,6 +250,57 @@
                                  v-for="(group, idx) in groupsList">
                                 <h6 class="title">[[group.name]]</h6>
                                 <p>Регистрирани участници: [[ countAthletesInGroup(group.id) ]]</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- --------------------- -->
+                    <!--      Състезание       -->
+                    <!-- --------------------- -->
+                    <div v-if="sysParams.showMode==2" class="rbt-right-side-panel popup-dashboardright-section">
+                        <div class="right-side-top">
+                            <h2 class="title">00:00:00:0</h2>
+                        </div>
+                        <div class="right-side-bottom mb--200">
+                            <div class="chat-history-section">
+                                <h6 class="title">Търсене:</h6>
+                                <ul class="chat-history-list">
+                                    <li class="history-box active">
+                                        <label for="searchBibNumber">Стартов номер: </label>
+                                        <input type="text" class="form-control"
+                                               id="searchBibNumber" maxlength="20" size="20"
+                                               v-model="lookupNumber" @input="focusDivById('r_'+lookupNumber)">
+                                    </li>
+                                </ul>
+                                <div class="rbt-sm-separator"></div>
+                                <h6 class="title">Покажи:</h6>
+                                <ul class="chat-history-list">
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterShowAll" type="checkbox"
+                                               :checked="filter.waitingToFinish && filter.disqualified && filter.finished"
+                                               @click="checkAllFilters()">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterShowAll"> всички </label>
+                                    </li>
+                                    <li class="rbt-sm-separator"></li>
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterWaitingToFinish" type="checkbox"
+                                               v-model="filter.waitingToFinish">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterWaitingToFinish" >наближаващи финала</label>
+                                    </li>
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterDisqualified" type="checkbox"
+                                               v-model="filter.disqualified">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterDisqualified">дисквалифицирани</label>
+                                    </li>
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterFinished" type="checkbox"
+                                               v-model="filter.finished">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterFinished">финиширали</label>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -241,6 +388,33 @@
                                     data-bs-dismiss="modal"
                                     @click="deleteAthlete()">
                                <i class="feather-check"></i><span>&nbsp;Изтрий</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Диалог за прекратяване на състезанието -->
+        <div id="stopCompetitionModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content wrapper top-flashlight leftside light-xl">
+                    <button class="close-button" data-bs-dismiss="modal">
+                        <i class="feather-x"></i>
+                    </button>
+                    <h5 class="title a">ВНИМАНИЕ!</h5>
+                    <p style="display: flex; align-items: center;">Всички незавршили състезатели ще бъдат дисквалифицирани.
+                        Моля, потвърдете прекратяване на състезанието!</p>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-12"  style="text-align: right;">
+                            <button class="react-btn btn-default btn-small btn-border bg-color-success"
+                                   data-bs-dismiss="modal">
+                               <i class="feather-x"></i><span>&nbsp;Откажи</span>
+                            </button>
+                            &nbsp
+                            <button class="react-btn btn-default btn-small btn-border bg-color-danger"
+                                    data-bs-dismiss="modal"
+                                    @click="closeCompetition()">
+                               <i class="feather-check"></i><span>&nbsp;Потвърди</span>
                             </button>
                         </div>
                     </div>

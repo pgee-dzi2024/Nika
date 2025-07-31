@@ -11,43 +11,61 @@ const App = {
             c_athlete: {
                 id: 1,
                 name: "Иван Петров",
-                bib_number: "88",
+                bib_number: 88,
                 result_time: null,
                 group: {
                     id: 3,
                     name: "Елит",
                     comment: "20-40 г"
-                }
+                },
+            },
+            lookupNumber: '80',
+            filter: {
+                waitingToFinish: true,
+                disqualified: true,
+                finished: true,
             },
         }
     },
+
     methods: {
-    closeRegistration(){
-        this.sysParams.status = 1
-        this.sysParams.showMode = 1
-        this.toggleRightPanel()
+        startRace(){
+            this.toggleRightPanel()
+            this.sysParams.status=1
+            this.sysParams.showMode=2
         },
 
-    toggleRightPanel(){
-        $(".popup-dashboardright-btn").toggleClass("collapsed");
-        $(".popup-dashboardright-section").toggleClass("collapsed");
-        $(".rbt-main-content").toggleClass("area-right-expanded");
-        $(".rbt-static-bar").toggleClass("area-right-expanded");
-        },
+        closeRegistration(){
+            this.sysParams.status = 1
+            this.sysParams.showMode = 1
+            this.toggleRightPanel()
+            },
 
-    loadSysParams(){
-        axios.get('/api/sysparams/')
-            .then(response => {
-                // Обхождаме всеки запис от отговора
-                response.data.forEach(param => {
-                    // За всеки създаваме променлива под sysParams с ключ - името и стойност - value
-                    this.sysParams[param.name] = param.value;
+        closeCompetition(){
+            this.sysParams.status = 2
+            this.sysParams.showMode = 3
+            },
+
+        toggleRightPanel(){
+            $(".popup-dashboardright-btn").toggleClass("collapsed");
+            $(".popup-dashboardright-section").toggleClass("collapsed");
+            $(".rbt-main-content").toggleClass("area-right-expanded");
+            $(".rbt-static-bar").toggleClass("area-right-expanded");
+            },
+
+        loadSysParams(){
+            axios.get('/api/sysparams/')
+                .then(response => {
+                    // Обхождаме всеки запис от отговора
+                    response.data.forEach(param => {
+                        // За всеки създаваме променлива под sysParams с ключ - името и стойност - value
+                        this.sysParams[param.name] = param.value;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching system parameters:', error);
                 });
-            })
-            .catch(error => {
-                console.error('Error fetching system parameters:', error);
-            });
-        },
+            },
 
         loadStartList(){
         axios.get('/api/athletes/')
@@ -141,6 +159,29 @@ const App = {
             return this.startList.filter(a => a.group && a.group.id === groupId).length;
         },
 
+        focusDivById(id) {
+            console.log('Опитвам да фокусирам id=',id)
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.classList.add('active-focus');
+                setTimeout(() => el.classList.remove('active-focus'), 1200);
+            }
+        },
+
+        checkAllFilters(){
+            if (this.filter.waitingToFinish && this.filter.disqualified && this.filter.finished) {
+                this.filter.waitingToFinish = false
+                this.filter.disqualified = false
+                this.filter.finished = false
+            }
+            else {
+                this.filter.waitingToFinish = true
+                this.filter.disqualified = true
+                this.filter.finished = true
+            }
+
+        },
     },
 
     created: function(){

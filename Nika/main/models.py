@@ -43,8 +43,9 @@ class Group(models.Model):
 """
 class Athlete(models.Model):
     name = models.CharField('Име на състезателя', max_length=60)
-    bib_number = models.CharField('Стартов номер', max_length=10)
+    bib_number = models.IntegerField('Стартов номер', default=0)
     result_time = models.DurationField('Време', null=True, blank=True)
+
     group = models.ForeignKey(
         Group,
         on_delete=models.PROTECT,   # За да не се позволи изтриване на ползвана група
