@@ -1,11 +1,11 @@
 from django.contrib import admin
-from .models import SysParam, Group, Athlete
+from .models import *
 
 
-@admin.register(SysParam)
+@admin.register(Competition)
 class SysParamAdmin(admin.ModelAdmin):
-    list_display = ('name', 'value', 'comment')
-    search_fields = ('name', 'value', 'comment')
+    list_display = ('name', 'status', 'start_time', 'next_num')
+    search_fields = ('name', 'status', 'start_time', 'next_num')
 
 
 @admin.register(Group)
@@ -19,3 +19,4 @@ class AthleteAdmin(admin.ModelAdmin):
     list_display = ('name', 'bib_number', 'result_time', 'group')
     search_fields = ('name', 'bib_number')
     list_filter = ('group',)
+

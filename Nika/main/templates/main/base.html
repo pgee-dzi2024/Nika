@@ -31,10 +31,10 @@
                                 <nav class="mainmenu-nav d-none d-lg-block text-center">
                                     <!-- Точки на главното меню -->
                                     <ul class="mainmenu">
-                                        <li><a @click="sysParams.showMode = 0">Регистрация</a></li>
-                                        <li><a @click="sysParams.showMode = 1">Старт</a></li>
-                                        <li><a @click="sysParams.showMode = 2">Състезание</a></li>
-                                        <li><a @click="sysParams.showMode = 3">Класиране</a></li>
+                                        <li><a @click="showMode = 0">Регистрация</a></li>
+                                        <li><a @click="showMode = 1">Старт</a></li>
+                                        <li><a @click="showMode = 2">Състезание</a></li>
+                                        <li><a @click="showMode = 3">Класиране</a></li>
                                     </ul>
                                 </nav>
 
@@ -72,10 +72,10 @@
 
                     <div class="content">
                         <ul class="mainmenu">
-                            <li><a href="{% url 'home' %}">Регистрация</a></li>
-                            <li><a href="{% url 'home' %}">Старт</a></li>
-                            <li ><a href="{% url 'home' %}">Състезание</a></li>
-                            <li ><a href="{% url 'home' %}">Класиране</a></li>
+                            <li><a @click="showMode = 0">Регистрация</a></li>
+                            <li><a @click="showMode = 1">Старт</a></li>
+                            <li><a @click="showMode = 2">Състезание</a></li>
+                            <li><a @click="showMode = 3">Класиране</a></li>
                         </ul>
                         <div class="rbt-sm-separator"></div>
                     </div>

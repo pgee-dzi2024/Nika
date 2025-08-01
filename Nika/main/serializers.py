@@ -4,8 +4,8 @@ from .models import *
 
 class SysParamSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SysParam
-        fields = ['id', 'name', 'value', 'comment']
+        model = Competition
+        fields = ['id', 'name', 'status', 'next_num']
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -24,4 +24,4 @@ class AthleteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Athlete
-        fields = ['id', 'name', 'bib_number', 'result_time', 'group', 'group_id']
+        fields = ['id', 'name', 'bib_number', 'result_time', 'num', 'status', 'group', 'group_id']
