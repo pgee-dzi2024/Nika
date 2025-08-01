@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Време на генериране: 30 юли 2025 в 10:45
+-- Време на генериране:  1 авг 2025 в 12:15
 -- Версия на сървъра: 10.4.32-MariaDB
 -- Версия на PHP: 8.2.12
 
@@ -27,6 +27,7 @@ SET time_zone = "+00:00";
 -- Структура на таблица `auth_group`
 --
 
+DROP TABLE IF EXISTS `auth_group`;
 CREATE TABLE `auth_group` (
   `id` int(11) NOT NULL,
   `name` varchar(150) NOT NULL
@@ -38,6 +39,7 @@ CREATE TABLE `auth_group` (
 -- Структура на таблица `auth_group_permissions`
 --
 
+DROP TABLE IF EXISTS `auth_group_permissions`;
 CREATE TABLE `auth_group_permissions` (
   `id` bigint(20) NOT NULL,
   `group_id` int(11) NOT NULL,
@@ -50,6 +52,7 @@ CREATE TABLE `auth_group_permissions` (
 -- Структура на таблица `auth_permission`
 --
 
+DROP TABLE IF EXISTS `auth_permission`;
 CREATE TABLE `auth_permission` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -97,7 +100,11 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (33, 'Can add Група/категория', 9, 'add_group'),
 (34, 'Can change Група/категория', 9, 'change_group'),
 (35, 'Can delete Група/категория', 9, 'delete_group'),
-(36, 'Can view Група/категория', 9, 'view_group');
+(36, 'Can view Група/категория', 9, 'view_group'),
+(37, 'Can add competition', 10, 'add_competition'),
+(38, 'Can change competition', 10, 'change_competition'),
+(39, 'Can delete competition', 10, 'delete_competition'),
+(40, 'Can view competition', 10, 'view_competition');
 
 -- --------------------------------------------------------
 
@@ -105,6 +112,7 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 -- Структура на таблица `auth_user`
 --
 
+DROP TABLE IF EXISTS `auth_user`;
 CREATE TABLE `auth_user` (
   `id` int(11) NOT NULL,
   `password` varchar(128) NOT NULL,
@@ -132,6 +140,7 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 -- Структура на таблица `auth_user_groups`
 --
 
+DROP TABLE IF EXISTS `auth_user_groups`;
 CREATE TABLE `auth_user_groups` (
   `id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -144,6 +153,7 @@ CREATE TABLE `auth_user_groups` (
 -- Структура на таблица `auth_user_user_permissions`
 --
 
+DROP TABLE IF EXISTS `auth_user_user_permissions`;
 CREATE TABLE `auth_user_user_permissions` (
   `id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -156,6 +166,7 @@ CREATE TABLE `auth_user_user_permissions` (
 -- Структура на таблица `django_admin_log`
 --
 
+DROP TABLE IF EXISTS `django_admin_log`;
 CREATE TABLE `django_admin_log` (
   `id` int(11) NOT NULL,
   `action_time` datetime(6) NOT NULL,
@@ -181,7 +192,10 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 (7, '2025-07-29 20:21:34.542669', '5', 'Мастър(51-60 г)', 2, '[{\"changed\": {\"fields\": [\"\\u0418\\u043c\\u0435 \\u043d\\u0430\\u0433\\u0440\\u0443\\u043f\\u0430\\u0442\\u0430\"]}}]', 9, 1),
 (8, '2025-07-29 20:23:02.114115', '1', 'status: 0', 1, '[{\"added\": {}}]', 7, 1),
 (9, '2025-07-29 20:26:41.633048', '2', 'competition: ТОДОРКА VERTICAL', 1, '[{\"added\": {}}]', 7, 1),
-(10, '2025-07-30 07:17:44.899215', '4', 'Мастър Елит(41-50 г)', 2, '[{\"changed\": {\"fields\": [\"\\u0418\\u043c\\u0435 \\u043d\\u0430\\u0433\\u0440\\u0443\\u043f\\u0430\\u0442\\u0430\"]}}]', 9, 1);
+(10, '2025-07-30 07:17:44.899215', '4', 'Мастър Елит(41-50 г)', 2, '[{\"changed\": {\"fields\": [\"\\u0418\\u043c\\u0435 \\u043d\\u0430\\u0433\\u0440\\u0443\\u043f\\u0430\\u0442\\u0430\"]}}]', 9, 1),
+(11, '2025-07-30 11:09:52.945742', '1', 'Иван Петров (88)', 1, '[{\"added\": {}}]', 8, 1),
+(12, '2025-07-30 11:10:10.141414', '2', 'Петър Иванов (99)', 1, '[{\"added\": {}}]', 8, 1),
+(13, '2025-07-31 14:03:30.623545', '1', 'Competition object (1)', 1, '[{\"added\": {}}]', 10, 1);
 
 -- --------------------------------------------------------
 
@@ -189,6 +203,7 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 -- Структура на таблица `django_content_type`
 --
 
+DROP TABLE IF EXISTS `django_content_type`;
 CREATE TABLE `django_content_type` (
   `id` int(11) NOT NULL,
   `app_label` varchar(100) NOT NULL,
@@ -206,6 +221,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (4, 'auth', 'user'),
 (5, 'contenttypes', 'contenttype'),
 (8, 'main', 'athlete'),
+(10, 'main', 'competition'),
 (9, 'main', 'group'),
 (7, 'main', 'sysparam'),
 (6, 'sessions', 'session');
@@ -216,6 +232,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 -- Структура на таблица `django_migrations`
 --
 
+DROP TABLE IF EXISTS `django_migrations`;
 CREATE TABLE `django_migrations` (
   `id` bigint(20) NOT NULL,
   `app` varchar(255) NOT NULL,
@@ -246,7 +263,14 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (16, 'auth', '0011_update_proxy_permissions', '2025-07-28 08:59:36.879992'),
 (17, 'auth', '0012_alter_user_first_name_max_length', '2025-07-28 08:59:36.910084'),
 (18, 'sessions', '0001_initial', '2025-07-28 08:59:36.966665'),
-(19, 'main', '0001_initial', '2025-07-29 20:15:27.006199');
+(19, 'main', '0001_initial', '2025-07-29 20:15:27.006199'),
+(20, 'main', '0002_alter_athlete_bib_number_alter_athlete_group_and_more', '2025-07-30 22:14:18.186706'),
+(21, 'main', '0003_competition', '2025-07-31 13:31:15.651957'),
+(22, 'main', '0004_delete_sysparam_alter_athlete_options_and_more', '2025-07-31 15:47:01.972261'),
+(23, 'main', '0005_alter_athlete_result_time', '2025-07-31 17:24:21.463846'),
+(24, 'main', '0006_alter_athlete_name', '2025-07-31 18:04:54.653869'),
+(25, 'main', '0007_alter_athlete_result_time', '2025-07-31 18:29:51.558444'),
+(26, 'main', '0008_alter_athlete_result_time', '2025-07-31 19:27:35.398302');
 
 -- --------------------------------------------------------
 
@@ -254,6 +278,7 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 -- Структура на таблица `django_session`
 --
 
+DROP TABLE IF EXISTS `django_session`;
 CREATE TABLE `django_session` (
   `session_key` varchar(40) NOT NULL,
   `session_data` longtext NOT NULL,
@@ -273,13 +298,56 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 -- Структура на таблица `main_athlete`
 --
 
+DROP TABLE IF EXISTS `main_athlete`;
 CREATE TABLE `main_athlete` (
   `id` bigint(20) NOT NULL,
-  `name` varchar(60) NOT NULL,
-  `bib_number` varchar(10) NOT NULL,
-  `result_time` bigint(20) DEFAULT NULL,
-  `group_id` bigint(20) NOT NULL
+  `name` varchar(80) NOT NULL,
+  `bib_number` int(11) NOT NULL,
+  `result_time` varchar(10) NOT NULL,
+  `group_id` bigint(20) NOT NULL,
+  `num` smallint(5) UNSIGNED DEFAULT NULL CHECK (`num` >= 0),
+  `status` smallint(5) UNSIGNED NOT NULL CHECK (`status` >= 0)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_athlete`
+--
+
+INSERT INTO `main_athlete` (`id`, `name`, `bib_number`, `result_time`, `group_id`, `num`, `status`) VALUES
+(1, 'Иван Георгиев', 101, '0:00:00.0', 3, 999, 1),
+(2, 'Петър Иванов', 99, '0:00:00.0', 4, 999, 1),
+(3, 'Георги Георгиев', 21, '0:00:00.0', 6, 999, 1),
+(5, 'Виктор Василев', 55, '0:06:51.3', 3, 22, 3),
+(7, 'Тодор Тодоров', 1, '0:06:41.5', 6, 19, 3),
+(8, 'Петър Петров', 2, '0:06:39.6', 3, 18, 3),
+(9, 'Славчо Друмев', 5, '0:06:43.7', 3, 20, 3),
+(10, 'Минчо Празников', 6, '0:00:00.0', 1, 999, 1),
+(11, 'Питър Пан', 8, '0:00:00.0', 3, 999, 1),
+(12, 'Васил Викторов', 32, '0:06:47.3', 3, 21, 3),
+(13, 'Васил Василев', 35, '0:00:00.0', 4, 9999, 1),
+(14, 'Светослав Карагеоргиев', 66, '0:00:00.0', 4, 9999, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `main_competition`
+--
+
+DROP TABLE IF EXISTS `main_competition`;
+CREATE TABLE `main_competition` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `start_time` datetime(6) DEFAULT NULL,
+  `next_num` smallint(5) UNSIGNED DEFAULT NULL CHECK (`next_num` >= 0),
+  `status` smallint(5) UNSIGNED DEFAULT NULL CHECK (`status` >= 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `main_competition`
+--
+
+INSERT INTO `main_competition` (`id`, `name`, `start_time`, `next_num`, `status`) VALUES
+(1, 'ТОДОРКА VERTICAL', '2025-08-01 10:04:05.327451', 23, 0);
 
 -- --------------------------------------------------------
 
@@ -287,6 +355,7 @@ CREATE TABLE `main_athlete` (
 -- Структура на таблица `main_group`
 --
 
+DROP TABLE IF EXISTS `main_group`;
 CREATE TABLE `main_group` (
   `id` bigint(20) NOT NULL,
   `name` varchar(30) NOT NULL,
@@ -304,27 +373,6 @@ INSERT INTO `main_group` (`id`, `name`, `comment`) VALUES
 (4, 'Мастър Елит', '41-50 г'),
 (5, 'Мастър', '51-60 г'),
 (6, 'Най-опитен планинар', '61+ г');
-
--- --------------------------------------------------------
-
---
--- Структура на таблица `main_sysparam`
---
-
-CREATE TABLE `main_sysparam` (
-  `id` bigint(20) NOT NULL,
-  `name` varchar(30) NOT NULL,
-  `value` varchar(30) NOT NULL,
-  `comment` varchar(80) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Схема на данните от таблица `main_sysparam`
---
-
-INSERT INTO `main_sysparam` (`id`, `name`, `value`, `comment`) VALUES
-(1, 'status', '0', 'етап от състезанието, който тече в момента'),
-(2, 'competition', 'ТОДОРКА VERTICAL', 'име на текущото състезание');
 
 --
 -- Indexes for dumped tables
@@ -411,15 +459,15 @@ ALTER TABLE `main_athlete`
   ADD KEY `main_athlete_group_id_732d8675_fk_main_group_id` (`group_id`);
 
 --
--- Индекси за таблица `main_group`
+-- Индекси за таблица `main_competition`
 --
-ALTER TABLE `main_group`
+ALTER TABLE `main_competition`
   ADD PRIMARY KEY (`id`);
 
 --
--- Индекси за таблица `main_sysparam`
+-- Индекси за таблица `main_group`
 --
-ALTER TABLE `main_sysparam`
+ALTER TABLE `main_group`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -442,7 +490,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
@@ -466,37 +514,37 @@ ALTER TABLE `auth_user_user_permissions`
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `main_athlete`
 --
 ALTER TABLE `main_athlete`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `main_competition`
+--
+ALTER TABLE `main_competition`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `main_group`
 --
 ALTER TABLE `main_group`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `main_sysparam`
---
-ALTER TABLE `main_sysparam`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Ограничения за дъмпнати таблици
