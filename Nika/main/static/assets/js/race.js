@@ -38,25 +38,25 @@ const App = {
     },
 
     methods: {
-        closeRegistration(){
+        closeRegistration() {
             this.sysParams.status = 1
             this.showMode = 1
             this.toggleRightPanel()
-            },
+        },
 
-        closeCompetition(){
+        closeCompetition() {
             this.sysParams.status = 2
             this.showMode = 3
-            },
+        },
 
-        toggleRightPanel(){
+        toggleRightPanel() {
             $(".popup-dashboardright-btn").toggleClass("collapsed");
             $(".popup-dashboardright-section").toggleClass("collapsed");
             $(".rbt-main-content").toggleClass("area-right-expanded");
             $(".rbt-static-bar").toggleClass("area-right-expanded");
-            },
+        },
 
-        loadSysParams(){
+        loadSysParams() {
             axios.get('/api/sysparams/')
                 .then(response => {
                     this.sysParams = response.data[0]
@@ -64,30 +64,31 @@ const App = {
                 .catch(error => {
                     console.error('Error fetching system parameters:', error);
                 });
-            },
-
-        loadStartList(){
-        axios.get('/api/athletes/')
-            .then(response => {
-                this.startList = response.data
-                console.log(" ****")
-            })
-            .catch(error => {
-                console.error('Error fetching start list:', error);
-            });
         },
 
-        loadGroupsList(){
-        axios.get('/api/groups/')
-            .then(response => {
-                this.groupsList = response.data
-            })
-            .catch(error => {
-                console.error('Error fetching groups list:', error);
-            });
+        loadStartList() {
+            const sk = this.showMode
+            axios.get('api/athletes/sort/' + sk + '/')
+                .then(response => {
+                    this.startList = response.data
+                    console.log(" ****")
+                })
+                .catch(error => {
+                    console.error('Error fetching start list:', error);
+                });
         },
 
-        editAthlete(num){
+        loadGroupsList() {
+            axios.get('/api/groups/')
+                .then(response => {
+                    this.groupsList = response.data
+                })
+                .catch(error => {
+                    console.error('Error fetching groups list:', error);
+                });
+        },
+
+        editAthlete(num) {
             this.c_athlete.id = this.startList[num].id
             this.c_athlete.name = this.startList[num].name
             this.c_athlete.bib_number = this.startList[num].bib_number
@@ -97,18 +98,18 @@ const App = {
             this.c_athlete.group = this.startList[num].group
         },
 
-        changeGroup(idx){
+        changeGroup(idx) {
             this.c_athlete.group = this.groupsList[idx]
         },
 
-        newAthlete(){
+        newAthlete() {
             this.c_athlete.id = 0
             this.c_athlete.name = ""
             this.c_athlete.bib_number = ""
             this.c_athlete.result_time = ""
-            this.c_athlete.num =  999
-            this.c_athlete.status =  1
-                this.c_athlete.group = this.groupsList[0]
+            this.c_athlete.num = 999
+            this.c_athlete.status = 1
+            this.c_athlete.group = this.groupsList[0]
         },
 
         saveAthlete() {
@@ -122,7 +123,7 @@ const App = {
             };
 
             const config = {
-                headers: { 'X-CSRFToken': CSRF_TOKEN }
+                headers: {'X-CSRFToken': CSRF_TOKEN}
             };
 
             if (this.c_athlete.id === 0) {
@@ -150,7 +151,7 @@ const App = {
 
         deleteAthlete() {
             axios.delete('/api/athletes/' + this.c_athlete.id + '/', {
-                headers: { 'X-CSRFToken': CSRF_TOKEN }
+                headers: {'X-CSRFToken': CSRF_TOKEN}
             })
                 .then(response => {
                     this.loadStartList();      // Обновява списъка
@@ -167,22 +168,21 @@ const App = {
         },
 
         focusDivById(id) {
-            console.log('Опитвам да фокусирам id=',id)
+            console.log('Опитвам да фокусирам id=', id)
             const el = document.getElementById(id);
             if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.scrollIntoView({behavior: 'smooth', block: 'center'});
                 el.classList.add('active-focus');
                 setTimeout(() => el.classList.remove('active-focus'), 1200);
             }
         },
 
-        checkAllFilters(){
+        checkAllFilters() {
             if (this.filter.waitingToFinish && this.filter.disqualified && this.filter.finished) {
                 this.filter.waitingToFinish = false
                 this.filter.disqualified = false
                 this.filter.finished = false
-            }
-            else {
+            } else {
                 this.filter.waitingToFinish = true
                 this.filter.disqualified = true
                 this.filter.finished = true
@@ -210,12 +210,12 @@ const App = {
 
         startCompetition() {
             axios({
-                method:'POST',
-                url:'/api/competition/start/',
-                headers:{
-                    'X-CSRFToken':CSRF_TOKEN,
-                    },
-                })
+                method: 'POST',
+                url: '/api/competition/start/',
+                headers: {
+                    'X-CSRFToken': CSRF_TOKEN,
+                },
+            })
                 .then(response => {
                     // Можеш да опресниш start_time от отговора:
                     this.startTime = new Date(response.data.start_time);
@@ -223,11 +223,11 @@ const App = {
                 .catch(e => alert('Грешка при стартиране!'));
         },
 
-        startRace(){
+        startRace() {
             this.startCompetition()
             this.toggleRightPanel()
-            this.sysParams.status=1
-            this.showMode=2
+            this.sysParams.status = 1
+            this.showMode = 2
             this.fetchStartTime()
         },
 
@@ -246,19 +246,36 @@ const App = {
         },
 
         setStatus(num, value) {
-            if(value===2){this.incrementNextNum()}
+            /* Променя статуса на състезател с пореден номер num в списъка
+               Новата стойност на статуса е value
+                  0 - дисквалифициран, 1 - регистриран, 2 - финиширащ, 3 - финиширал
+            */
+            const html_id = 'r_' + this.c_athlete.bib_number
+            if (value === 2) {
+                this.incrementNextNum()
+            }
+
             this.editAthlete(num)
             this.c_athlete.status = value
+
             if (this.c_athlete.status === 3) {
                 this.c_athlete.result_time = this.formatTimer(this.timerValue);
             } else if (this.c_athlete.status === 0) {
                 this.c_athlete.result_time = 'DQ';
-                this.c_athlete.num = '999';
+                this.c_athlete.num = '9999';
             } else {
+                if (this.c_athlete.status === 1) {
+                    this.c_athlete.num = '999'
+                }
                 this.c_athlete.result_time = '0:00:00.0';
             }
-            if(value===2){this.c_athlete.num=this.sysParams.next_num}
+
+            if (value === 2) {
+                this.c_athlete.num = this.sysParams.next_num
+            }
             this.saveAthlete()
+            this.focusDivById(html_id)
+            /*
             console.log('this.showMode = ', this.showMode);
             if(this.showMode===2){
                 console.log('сортиране по num')
@@ -268,22 +285,21 @@ const App = {
                 console.log('сортиране по време')
                 this.sortStartListByTime()
             }
+            */
         },
 
-        upEnable(num){
-            if(num>0){
+        upEnable(num) {
+            if (num > 0) {
                 return this.startList[num].status === this.startList[num - 1].status;
-            }
-            else {
+            } else {
                 return false
             }
         },
 
-        downEnable(num){
-            if(num<(this.startList.length-1)){
+        downEnable(num) {
+            if (num < (this.startList.length - 1)) {
                 return this.startList[num].status === this.startList[num + 1].status;
-            }
-            else {
+            } else {
                 return false
             }
         },
@@ -291,7 +307,7 @@ const App = {
         updateStatus(newStatus) {
             axios.patch(
                 '/api/competition/status/',
-                { status: newStatus }
+                {status: newStatus}
             )
                 .then(response => {
                     this.sysParams.status = response.data.status;
@@ -303,10 +319,10 @@ const App = {
 
         incrementNextNum() {
             axios({
-                method:'POST',
-                url:'/api/competition/nextnum/inc/',
-                headers:{
-                    'X-CSRFToken':CSRF_TOKEN,
+                method: 'POST',
+                url: '/api/competition/nextnum/inc/',
+                headers: {
+                    'X-CSRFToken': CSRF_TOKEN,
                 },
             })
                 .then(response => {
@@ -316,30 +332,27 @@ const App = {
 
         },
 
-        sortStartListByNum() {
-            this.startList.sort((a, b) => a.num - b.num);
-        },
+        swapNums(idx1, idx2) {
+            let payload = {
+                id1: this.startList[idx1].id,
+                num1: this.startList[idx2].num,
+                id2: this.startList[idx2].id,
+                num2: this.startList[idx1].num
+            };
 
-        sortStartListByTime() {
-            const status3 = this.startList.filter(a => a.status === 3);
-            const others = this.startList.filter(a => a.status !== 3);
+            const config = {
+                headers: {'X-CSRFToken': CSRF_TOKEN}
+            };
 
-            // Функция за конвертиране на време в секунди
-            function timeStringToSeconds(timeStr) {
-                if (!timeStr || typeof timeStr !== 'string') return Infinity;
-                if (timeStr === 'DQ') return Infinity;
-                let [hms, ms] = timeStr.split('.');
-                let [h, m, s] = hms.split(':').map(Number);
-                let milliseconds = ms ? Number('0.' + ms) : 0;
-                if (isNaN(h) || isNaN(m) || isNaN(s)) return Infinity;
-                return h * 3600 + m * 60 + s + milliseconds;
-            }
-
-            // Сортираме само status3
-            status3.sort((a, b) => timeStringToSeconds(a.result_time) - timeStringToSeconds(b.result_time));
-
-            // Записваме обратно: първо всички с status 3 (сортирани), после другите (по стар ред)
-            this.startList = [...status3, ...others];
+            axios.post('/api/athletes/bulk-num-update/', payload, config)
+                .then(response => {
+                    this.loadStartList();
+                    this.newAthlete();
+                })
+                .catch(e => {
+                    alert('Грешка при размяна на номерата!');
+                    console.error(e);
+                });
         },
 
     },

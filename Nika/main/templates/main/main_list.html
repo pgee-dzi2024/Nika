@@ -175,14 +175,16 @@
 
                                                             <!-- Нагоре -->
                                                             <button class="react-btn btn-default btn-small btn-border"
-                                                                    v-if="(athlete.status == 2)&&upEnable(athlete_idx)">
+                                                                    v-if="(athlete.status == 2)&&upEnable(athlete_idx)"
+                                                                    @click="swapNums(athlete_idx, athlete_idx-1)">
                                                                 <i class="feather-chevrons-up" style="margin-left: -6px;"></i>
                                                             </button>
                                                             &nbsp;
 
                                                             <!-- Надолу -->
                                                             <button class="react-btn btn-default btn-small btn-border"
-                                                                    v-if="(athlete.status == 2)&&downEnable(athlete_idx)">
+                                                                    v-if="(athlete.status == 2)&&downEnable(athlete_idx)"
+                                                                    @click="swapNums(athlete_idx, athlete_idx+1)">
                                                                 <i class="feather-chevrons-down" style="margin-left: -6px;"></i>
                                                             </button>
                                                             &nbsp;
