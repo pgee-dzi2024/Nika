@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Време на генериране:  1 авг 2025 в 12:15
+-- Време на генериране:  2 авг 2025 в 20:22
 -- Версия на сървъра: 10.4.32-MariaDB
 -- Версия на PHP: 8.2.12
 
@@ -27,7 +27,6 @@ SET time_zone = "+00:00";
 -- Структура на таблица `auth_group`
 --
 
-DROP TABLE IF EXISTS `auth_group`;
 CREATE TABLE `auth_group` (
   `id` int(11) NOT NULL,
   `name` varchar(150) NOT NULL
@@ -39,7 +38,6 @@ CREATE TABLE `auth_group` (
 -- Структура на таблица `auth_group_permissions`
 --
 
-DROP TABLE IF EXISTS `auth_group_permissions`;
 CREATE TABLE `auth_group_permissions` (
   `id` bigint(20) NOT NULL,
   `group_id` int(11) NOT NULL,
@@ -52,7 +50,6 @@ CREATE TABLE `auth_group_permissions` (
 -- Структура на таблица `auth_permission`
 --
 
-DROP TABLE IF EXISTS `auth_permission`;
 CREATE TABLE `auth_permission` (
   `id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -112,7 +109,6 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 -- Структура на таблица `auth_user`
 --
 
-DROP TABLE IF EXISTS `auth_user`;
 CREATE TABLE `auth_user` (
   `id` int(11) NOT NULL,
   `password` varchar(128) NOT NULL,
@@ -140,7 +136,6 @@ INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `userna
 -- Структура на таблица `auth_user_groups`
 --
 
-DROP TABLE IF EXISTS `auth_user_groups`;
 CREATE TABLE `auth_user_groups` (
   `id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -153,7 +148,6 @@ CREATE TABLE `auth_user_groups` (
 -- Структура на таблица `auth_user_user_permissions`
 --
 
-DROP TABLE IF EXISTS `auth_user_user_permissions`;
 CREATE TABLE `auth_user_user_permissions` (
   `id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -166,7 +160,6 @@ CREATE TABLE `auth_user_user_permissions` (
 -- Структура на таблица `django_admin_log`
 --
 
-DROP TABLE IF EXISTS `django_admin_log`;
 CREATE TABLE `django_admin_log` (
   `id` int(11) NOT NULL,
   `action_time` datetime(6) NOT NULL,
@@ -203,7 +196,6 @@ INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`,
 -- Структура на таблица `django_content_type`
 --
 
-DROP TABLE IF EXISTS `django_content_type`;
 CREATE TABLE `django_content_type` (
   `id` int(11) NOT NULL,
   `app_label` varchar(100) NOT NULL,
@@ -232,7 +224,6 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 -- Структура на таблица `django_migrations`
 --
 
-DROP TABLE IF EXISTS `django_migrations`;
 CREATE TABLE `django_migrations` (
   `id` bigint(20) NOT NULL,
   `app` varchar(255) NOT NULL,
@@ -278,7 +269,6 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 -- Структура на таблица `django_session`
 --
 
-DROP TABLE IF EXISTS `django_session`;
 CREATE TABLE `django_session` (
   `session_key` varchar(40) NOT NULL,
   `session_data` longtext NOT NULL,
@@ -298,7 +288,6 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 -- Структура на таблица `main_athlete`
 --
 
-DROP TABLE IF EXISTS `main_athlete`;
 CREATE TABLE `main_athlete` (
   `id` bigint(20) NOT NULL,
   `name` varchar(80) NOT NULL,
@@ -314,18 +303,19 @@ CREATE TABLE `main_athlete` (
 --
 
 INSERT INTO `main_athlete` (`id`, `name`, `bib_number`, `result_time`, `group_id`, `num`, `status`) VALUES
-(1, 'Иван Георгиев', 101, '0:00:00.0', 3, 999, 1),
-(2, 'Петър Иванов', 99, '0:00:00.0', 4, 999, 1),
-(3, 'Георги Георгиев', 21, '0:00:00.0', 6, 999, 1),
-(5, 'Виктор Василев', 55, '0:06:51.3', 3, 22, 3),
-(7, 'Тодор Тодоров', 1, '0:06:41.5', 6, 19, 3),
-(8, 'Петър Петров', 2, '0:06:39.6', 3, 18, 3),
-(9, 'Славчо Друмев', 5, '0:06:43.7', 3, 20, 3),
-(10, 'Минчо Празников', 6, '0:00:00.0', 1, 999, 1),
-(11, 'Питър Пан', 8, '0:00:00.0', 3, 999, 1),
-(12, 'Васил Викторов', 32, '0:06:47.3', 3, 21, 3),
-(13, 'Васил Василев', 35, '0:00:00.0', 4, 9999, 1),
-(14, 'Светослав Карагеоргиев', 66, '0:00:00.0', 4, 9999, 1);
+(1, 'Иван Георгиев', 101, '0:11:53.1', 3, 0, 3),
+(2, 'Петър Иванов', 99, '0:10:30.4', 4, 0, 3),
+(3, 'Георги Георгиев', 21, '0:11:26.0', 6, 0, 3),
+(5, 'Виктор Василев', 55, '0:11:23.7', 3, 0, 3),
+(7, 'Тодор Тодоров', 1, '0:01:52.8', 6, 0, 3),
+(8, 'Петър Петров', 2, '0:11:54.2', 3, 0, 3),
+(9, 'Славчо Друмев', 5, 'DQ', 3, 9999, 0),
+(10, 'Минчо Празников', 6, '0:01:48.5', 1, 0, 3),
+(11, 'Питър Пан', 8, '0:11:48.4', 3, 0, 3),
+(12, 'Васил Викторов', 32, 'DQ', 3, 9999, 0),
+(13, 'Васил Василев', 35, 'DQ', 4, 9999, 0),
+(14, 'Светослав Карагеоргиев', 66, '0:01:53.6', 4, 0, 3),
+(15, 'Мария Иванова', 7, '0:00:15.0', 2, 0, 3);
 
 -- --------------------------------------------------------
 
@@ -333,7 +323,6 @@ INSERT INTO `main_athlete` (`id`, `name`, `bib_number`, `result_time`, `group_id
 -- Структура на таблица `main_competition`
 --
 
-DROP TABLE IF EXISTS `main_competition`;
 CREATE TABLE `main_competition` (
   `id` bigint(20) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -347,7 +336,7 @@ CREATE TABLE `main_competition` (
 --
 
 INSERT INTO `main_competition` (`id`, `name`, `start_time`, `next_num`, `status`) VALUES
-(1, 'ТОДОРКА VERTICAL', '2025-08-01 10:04:05.327451', 23, 0);
+(1, 'ТОДОРКА VERTICAL', '2025-08-02 08:37:08.089139', 25, 0);
 
 -- --------------------------------------------------------
 
@@ -355,7 +344,6 @@ INSERT INTO `main_competition` (`id`, `name`, `start_time`, `next_num`, `status`
 -- Структура на таблица `main_group`
 --
 
-DROP TABLE IF EXISTS `main_group`;
 CREATE TABLE `main_group` (
   `id` bigint(20) NOT NULL,
   `name` varchar(30) NOT NULL,
@@ -532,7 +520,7 @@ ALTER TABLE `django_migrations`
 -- AUTO_INCREMENT for table `main_athlete`
 --
 ALTER TABLE `main_athlete`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `main_competition`
