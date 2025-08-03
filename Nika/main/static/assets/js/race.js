@@ -40,15 +40,16 @@ const App = {
 
     methods: {
         closeRegistration() {
-            this.sysParams.status = 1
+            this.updateStatus(0)
             this.showMode = 1
             this.toggleRightPanel()
         },
 
         closeCompetition() {
-            this.sysParams.status = 2
+            this.updateStatus(2)
             this.showMode = 3
             this.loadStartList()
+            if (this.timerInterval) clearInterval(this.timerInterval);
         },
 
         toggleRightPanel() {
@@ -227,7 +228,7 @@ const App = {
         startRace() {
             this.startCompetition()
             this.toggleRightPanel()
-            this.sysParams.status = 1
+            this.updateStatus(1)
             this.showMode = 2
             this.loadStartList()
             this.fetchStartTime()
@@ -300,7 +301,10 @@ const App = {
         updateStatus(newStatus) {
             axios.patch(
                 '/api/competition/status/',
-                {status: newStatus}
+                {status: newStatus},
+                {
+                    headers: { 'X-CSRFToken': CSRF_TOKEN }
+                }
             )
                 .then(response => {
                     this.sysParams.status = response.data.status;
@@ -389,6 +393,11 @@ const App = {
             })
             return count;
             },
+
+        setShowMode(vlue){
+            this.showMode = vlue;
+            this.loadStartList()
+        },
 
     },
 

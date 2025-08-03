@@ -83,7 +83,7 @@ class CompetitionStatusUpdate(APIView):
             return Response({"status": "Invalid value"}, status=400)
         comp.status = int(status_)
         comp.save()
-        return Response({"status": comp.next_num}, status=200)
+        return Response({"status": comp.status}, status=200)
 
 
 class CompetitionNextNumIncrement(APIView):
