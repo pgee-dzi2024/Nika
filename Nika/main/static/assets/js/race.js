@@ -33,8 +33,10 @@ const App = {
             startTime: null, // UTC timestamp от сървъра
             serverNow: null,
             timeOffset: 0,   // разлика между клиент и сървър
-            timerInterval: null,
+            timerInterval: null, // таймер за хронометъра
             timerValue: 0,   // ще показва изминалите секунди
+            updateInterval: null, //таймер за обновяване
+            updateMode:false, // режим на обновяване (false - не променя showMode; true - променя го
         }
     },
 
@@ -63,6 +65,18 @@ const App = {
             axios.get('/api/sysparams/')
                 .then(response => {
                     this.sysParams = response.data[0]
+                    if (this.updateMode) {
+                        if(this.sysParams.status === 0) {// 0 - преди състезанието
+                            this.showMode = 0
+                        } else if(this.sysParams.status === 1) {// 1 - състезание
+                            this.showMode = 2
+                            this.fetchStartTime()
+                        } else {// 2 - след състезанието
+                            this.showMode = 3
+                        }
+                    }
+                    this.loadStartList()
+                    this.updateMode=false
                 })
                 .catch(error => {
                     console.error('Error fetching system parameters:', error);
@@ -210,6 +224,13 @@ const App = {
             }, 100); // точност до 0.1 сек
         },
 
+        startUpdateLoop() {
+            if (this.updateInterval) clearInterval(this.updateInterval);
+            this.lupdateInterval = setInterval(() => {
+                this.loadSysParams();
+            }, 1000); // точност до 0.1 сек
+        },
+
         startCompetition() {
             axios({
                 method: 'POST',
@@ -221,17 +242,17 @@ const App = {
                 .then(response => {
                     // Можеш да опресниш start_time от отговора:
                     this.startTime = new Date(response.data.start_time);
+                    this.toggleRightPanel()
+                    this.updateStatus(1)
+                    this.showMode = 2
+                    this.loadStartList()
+                    this.fetchStartTime()
                 })
                 .catch(e => alert('Грешка при стартиране!'));
         },
 
         startRace() {
             this.startCompetition()
-            this.toggleRightPanel()
-            this.updateStatus(1)
-            this.showMode = 2
-            this.loadStartList()
-            this.fetchStartTime()
         },
 
         formatTimer(seconds) {
@@ -403,8 +424,9 @@ const App = {
 
     created: function(){
         this.loadSysParams()
-        this.loadStartList()
         this.loadGroupsList()
+        this.startUpdateLoop()
+        this.updateMode=true
     }
 }
 
