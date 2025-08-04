@@ -115,10 +115,10 @@
                                             <div class="breadcrumb-inner text-center">
                                                 <h1 class="title">00:00:00:0</h1>
                                                 <button class="react-btn btn-default btn-default btn-border bg-color-danger"
-                                                        @click="startRace()" v-if="sysParams.status==0">
+                                                        @click="startRace()" v-if="sysParams.status==1">
                                                     <i class="feather-x"></i> <span>&nbspС Т А Р Т </span>
                                                 </button>
-                                                <h5>[[sysParams.status]]</h5>
+
                                             </div>
                                         </div>
                                     </div>
@@ -311,7 +311,7 @@
                             <!-- --------------------- -->
                             <!--      Състезание       -->
                             <!-- --------------------- -->
-                            <ul v-if="(showMode == 2)&&(sysParams.status==1)" class="staticbar-btn-grp d-md-flex">
+                            <ul v-if="(showMode == 2)&&(sysParams.status==2)" class="staticbar-btn-grp d-md-flex">
                                 <li>
                                     <button class="react-btn btn-default btn-small btn-border"
                                             style="color: red; border-color: #5c0000d4;"

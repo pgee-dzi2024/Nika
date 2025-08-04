@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Време на генериране:  2 авг 2025 в 20:22
+-- Време на генериране:  4 авг 2025 в 11:52
 -- Версия на сървъра: 10.4.32-MariaDB
 -- Версия на PHP: 8.2.12
 
@@ -128,7 +128,7 @@ CREATE TABLE `auth_user` (
 --
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$600000$WRVKovSTGb2ZvqzgZjCbCF$N69TaCQClH5kugaW0ontEbIyUdM+atS8t3TVvMwTZWg=', '2025-07-28 09:03:16.698855', 1, 'nika_admin', '', '', '', 1, 1, '2025-07-28 09:02:22.129213');
+(1, 'pbkdf2_sha256$600000$WRVKovSTGb2ZvqzgZjCbCF$N69TaCQClH5kugaW0ontEbIyUdM+atS8t3TVvMwTZWg=', '2025-08-02 19:25:24.537533', 1, 'nika_admin', '', '', '', 1, 1, '2025-07-28 09:02:22.129213');
 
 -- --------------------------------------------------------
 
@@ -280,6 +280,7 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('a0l2jkig0sjn2s2cy7kotek3bhcvfjgx', '.eJxVjMsOwiAQRf-FtSE8WgZcuvcbyAxMpWogKe3K-O_apAvd3nPOfYmI21ri1nmJcxZnocXpdyNMD647yHestyZTq-syk9wVedAury3z83K4fwcFe_nWwTlQqIJJARAzWJwMas8YvNdJEQViHs2ABqyGnJyhEclrmpRNMGTx_gDjjjgm:1uiHrA:1EZpeJfcBcilA9zXnrLgcGXHxIAX3zY661wwRChclfw', '2025-08-16 19:25:24.540076'),
 ('xie79wdivtnlywfzzgajew6j30q2ira7', '.eJxVjMsOwiAQRf-FtSE8WgZcuvcbyAxMpWogKe3K-O_apAvd3nPOfYmI21ri1nmJcxZnocXpdyNMD647yHestyZTq-syk9wVedAury3z83K4fwcFe_nWwTlQqIJJARAzWJwMas8YvNdJEQViHs2ABqyGnJyhEclrmpRNMGTx_gDjjjgm:1ugJlM:1RdfDgutybsOwO4jwoLv0NKxsPGJhWc-8bR_gvqaS2E', '2025-08-11 09:03:16.705860');
 
 -- --------------------------------------------------------
@@ -303,19 +304,21 @@ CREATE TABLE `main_athlete` (
 --
 
 INSERT INTO `main_athlete` (`id`, `name`, `bib_number`, `result_time`, `group_id`, `num`, `status`) VALUES
-(1, 'Иван Георгиев', 101, '0:11:53.1', 3, 0, 3),
+(1, 'Иван Георгиев', 101, '0:00:00.0', 3, 31, 2),
 (2, 'Петър Иванов', 99, '0:10:30.4', 4, 0, 3),
 (3, 'Георги Георгиев', 21, '0:11:26.0', 6, 0, 3),
 (5, 'Виктор Василев', 55, '0:11:23.7', 3, 0, 3),
 (7, 'Тодор Тодоров', 1, '0:01:52.8', 6, 0, 3),
 (8, 'Петър Петров', 2, '0:11:54.2', 3, 0, 3),
-(9, 'Славчо Друмев', 5, 'DQ', 3, 9999, 0),
-(10, 'Минчо Празников', 6, '0:01:48.5', 1, 0, 3),
+(9, 'Славчо Друмев', 5, '0:00:00.0', 3, 27, 2),
+(10, 'Минчо Празников', 6, '0:01:48.5', 6, 1, 3),
 (11, 'Питър Пан', 8, '0:11:48.4', 3, 0, 3),
-(12, 'Васил Викторов', 32, 'DQ', 3, 9999, 0),
-(13, 'Васил Василев', 35, 'DQ', 4, 9999, 0),
-(14, 'Светослав Карагеоргиев', 66, '0:01:53.6', 4, 0, 3),
-(15, 'Мария Иванова', 7, '0:00:15.0', 2, 0, 3);
+(12, 'Васил Викторов', 32, '0:00:00.0', 3, 30, 2),
+(13, 'Васил Василев', 35, '0:05:48.2', 4, 0, 3),
+(14, 'Светослав Карагеоргиев', 66, '0:00:00.0', 4, 28, 2),
+(15, 'Мария Иванова', 7, '0:00:15.0', 2, 0, 3),
+(16, 'Георги Георгиев', 9, '0:00:44.7', 5, 0, 3),
+(17, 'Петко Петров', 3, '0:00:00.0', 5, 999, 1);
 
 -- --------------------------------------------------------
 
@@ -336,7 +339,7 @@ CREATE TABLE `main_competition` (
 --
 
 INSERT INTO `main_competition` (`id`, `name`, `start_time`, `next_num`, `status`) VALUES
-(1, 'ТОДОРКА VERTICAL', '2025-08-02 08:37:08.089139', 25, 0);
+(1, 'ТОДОРКА VERTICAL', '2025-08-04 09:41:41.359731', 32, 3);
 
 -- --------------------------------------------------------
 
@@ -520,7 +523,7 @@ ALTER TABLE `django_migrations`
 -- AUTO_INCREMENT for table `main_athlete`
 --
 ALTER TABLE `main_athlete`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `main_competition`

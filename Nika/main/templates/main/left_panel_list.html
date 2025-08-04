@@ -25,10 +25,13 @@
                     <div class="subscription-box">
                         <div class="inner">
                             <p>Състезание:</p>
-                            <a href="#" class="autor-info">
-
-                                <h5>[[sysParams.name]]</h5>
-                            </a>
+                            <h5>[[sysParams.name]]</h5>
+                            <p>Етап:&nbsp;
+                                <span v-if="sysParams.status==0">Регистрация</span>
+                                <span v-if="sysParams.status==1">Старт</span>
+                                <span v-if="sysParams.status==2">Състезание</span>
+                                <span v-if="sysParams.status==3">Класиране</span>
+                            </p>
                         </div>
                     </div>
                     <p class="subscription-copyright copyright-text text-center b4  small-text">Банско 2025 © Виктор Василев</p>

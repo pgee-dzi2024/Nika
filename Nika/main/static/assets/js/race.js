@@ -4,7 +4,7 @@ const App = {
         return {
             sysParams: {
                 id:0,
-                status: 0, // 0 - преди състезанието; 1 - състезание; 2 - след състезанието
+                status: 0, // 0 - преди състезанието; 1 - Старт; 2 - състезание; 3 - след състезанието;
                 next_num:0,
                 },
             showMode: 0, // 0 - Регистрация; 1 - Старт; 2 - Състезание; 3 - Класиране
@@ -37,18 +37,19 @@ const App = {
             timerValue: 0,   // ще показва изминалите секунди
             updateInterval: null, //таймер за обновяване
             updateMode:false, // режим на обновяване (false - не променя showMode; true - променя го
+            oldUpdateMode:false,
         }
     },
 
     methods: {
         closeRegistration() {
-            this.updateStatus(0)
+            this.updateStatus(1)
             this.showMode = 1
             this.toggleRightPanel()
         },
 
         closeCompetition() {
-            this.updateStatus(2)
+            this.updateStatus(3)
             this.showMode = 3
             this.loadStartList()
             if (this.timerInterval) clearInterval(this.timerInterval);
@@ -62,21 +63,20 @@ const App = {
         },
 
         loadSysParams() {
+            const old_status = this.sysParams.status
             axios.get('/api/sysparams/')
                 .then(response => {
                     this.sysParams = response.data[0]
-                    if (this.updateMode) {
-                        if(this.sysParams.status === 0) {// 0 - преди състезанието
-                            this.showMode = 0
-                        } else if(this.sysParams.status === 1) {// 1 - състезание
-                            this.showMode = 2
-                            this.fetchStartTime()
-                        } else {// 2 - след състезанието
-                            this.showMode = 3
-                        }
+                    if (old_status===this.showMode) {
+                        this.showMode = this.sysParams.status
+                    }
+                    if(this.sysParams.status === 2) { // ако е в режим "състезание"
+                       this.fetchStartTime()
+                    }
+                    if(this.sysParams.status === 3) { //ако е в режим "класиране"
+                        if (this.timerInterval) clearInterval(this.timerInterval);
                     }
                     this.loadStartList()
-                    this.updateMode=false
                 })
                 .catch(error => {
                     console.error('Error fetching system parameters:', error);
@@ -228,7 +228,7 @@ const App = {
             if (this.updateInterval) clearInterval(this.updateInterval);
             this.lupdateInterval = setInterval(() => {
                 this.loadSysParams();
-            }, 1000); // точност до 0.1 сек
+            }, 1000); // стартира се всяка секунда
         },
 
         startCompetition() {
@@ -243,7 +243,7 @@ const App = {
                     // Можеш да опресниш start_time от отговора:
                     this.startTime = new Date(response.data.start_time);
                     this.toggleRightPanel()
-                    this.updateStatus(1)
+                    this.updateStatus(2)
                     this.showMode = 2
                     this.loadStartList()
                     this.fetchStartTime()
@@ -281,7 +281,6 @@ const App = {
 
             this.editAthlete(num)
             this.c_athlete.status = value
-
             if (this.c_athlete.status === 3) {
                 this.c_athlete.result_time = this.formatTimer(this.timerValue);
                 this.c_athlete.num = 0
@@ -415,8 +414,8 @@ const App = {
             return count;
             },
 
-        setShowMode(vlue){
-            this.showMode = vlue;
+        setShowMode(value){
+            this.showMode = value;
             this.loadStartList()
         },
 
