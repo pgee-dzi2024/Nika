@@ -17,6 +17,7 @@ const App = {
                 result_time: '',
                 num: 999,
                 status: 1,
+                user: 'M',
                 group: {
                     id: 3,
                     name: "Елит",
@@ -113,6 +114,7 @@ const App = {
             this.c_athlete.num = this.startList[num].num
             this.c_athlete.status = this.startList[num].status
             this.c_athlete.group = this.startList[num].group
+            this.c_athlete.user = this.startList[num].user
         },
 
         changeGroup(idx) {
@@ -126,6 +128,7 @@ const App = {
             this.c_athlete.result_time = "0:00:00.0"
             this.c_athlete.num = 999
             this.c_athlete.status = 1
+            this.c_athlete.user = 'M'
             this.c_athlete.group = this.groupsList[0]
         },
 
@@ -136,7 +139,8 @@ const App = {
                 result_time: this.c_athlete.result_time,
                 num: this.c_athlete.num,
                 status: this.c_athlete.status,
-                group_id: this.c_athlete.group.id
+                group_id: this.c_athlete.group.id,
+                user: this.c_athlete.user
             };
 
             const config = {
@@ -430,3 +434,5 @@ const App = {
 }
 
 Vue.createApp(App).mount('#main')
+
+

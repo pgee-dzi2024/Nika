@@ -155,7 +155,7 @@
                                                                 [[ athlete.name ]]
                                                             </h6>
                                                         </div>
-                                                        <div class="col-lg-5 col-md-5 col-sm-5 col-12">
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-12">
                                                             [[ athlete.group.name ]] ([[ athlete.group.comment ]])
 
                                                         </div>
@@ -219,6 +219,11 @@
                                                                 <span>&nbspФинал</span>
                                                             </button>
                                                         </div>
+                                                        <div class="col-lg-1 col-md-1 col-sm-6 col-2">
+                                                            <h5 class="title">
+                                                                [[ athlete.user ]]
+                                                            </h5>
+                                                        </div>
                                                     </div>
                                                </div>
                                             </div>
@@ -271,10 +276,15 @@
                                                                     [[ athlete.bib_number ]]
                                                                 </h5>
                                                             </div>
-                                                            <div class="col-lg-7 col-md-7 col-sm-6 col-7">
+                                                            <div class="col-lg-6 col-md-6 col-sm-5 col-6">
                                                                 <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
                                                                     [[ athlete.name ]]
                                                                 </h6>
+                                                            </div>
+                                                            <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.user ]]
+                                                                </h5>
                                                             </div>
                                                         </div>
                                                    </div>

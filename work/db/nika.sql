@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Време на генериране:  4 авг 2025 в 11:52
+-- Време на генериране:  5 авг 2025 в 17:52
 -- Версия на сървъра: 10.4.32-MariaDB
 -- Версия на PHP: 8.2.12
 
@@ -20,6 +20,25 @@ SET time_zone = "+00:00";
 --
 -- База данни: `nika`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура на таблица `authtoken_token`
+--
+
+CREATE TABLE `authtoken_token` (
+  `key` varchar(40) NOT NULL,
+  `created` datetime(6) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Схема на данните от таблица `authtoken_token`
+--
+
+INSERT INTO `authtoken_token` (`key`, `created`, `user_id`) VALUES
+('6d3453048b4a3e5438fcf7201c483ab210a39942', '2025-08-04 21:19:17.910056', 1);
 
 -- --------------------------------------------------------
 
@@ -101,7 +120,15 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (37, 'Can add competition', 10, 'add_competition'),
 (38, 'Can change competition', 10, 'change_competition'),
 (39, 'Can delete competition', 10, 'delete_competition'),
-(40, 'Can view competition', 10, 'view_competition');
+(40, 'Can view competition', 10, 'view_competition'),
+(41, 'Can add Token', 11, 'add_token'),
+(42, 'Can change Token', 11, 'change_token'),
+(43, 'Can delete Token', 11, 'delete_token'),
+(44, 'Can view Token', 11, 'view_token'),
+(45, 'Can add Token', 12, 'add_tokenproxy'),
+(46, 'Can change Token', 12, 'change_tokenproxy'),
+(47, 'Can delete Token', 12, 'delete_tokenproxy'),
+(48, 'Can view Token', 12, 'view_tokenproxy');
 
 -- --------------------------------------------------------
 
@@ -211,6 +238,8 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (3, 'auth', 'group'),
 (2, 'auth', 'permission'),
 (4, 'auth', 'user'),
+(11, 'authtoken', 'token'),
+(12, 'authtoken', 'tokenproxy'),
 (5, 'contenttypes', 'contenttype'),
 (8, 'main', 'athlete'),
 (10, 'main', 'competition'),
@@ -261,7 +290,12 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (23, 'main', '0005_alter_athlete_result_time', '2025-07-31 17:24:21.463846'),
 (24, 'main', '0006_alter_athlete_name', '2025-07-31 18:04:54.653869'),
 (25, 'main', '0007_alter_athlete_result_time', '2025-07-31 18:29:51.558444'),
-(26, 'main', '0008_alter_athlete_result_time', '2025-07-31 19:27:35.398302');
+(26, 'main', '0008_alter_athlete_result_time', '2025-07-31 19:27:35.398302'),
+(27, 'main', '0009_athlete_user', '2025-08-04 20:43:59.834925'),
+(28, 'authtoken', '0001_initial', '2025-08-04 21:14:14.653454'),
+(29, 'authtoken', '0002_auto_20160226_1747', '2025-08-04 21:14:14.672636'),
+(30, 'authtoken', '0003_tokenproxy', '2025-08-04 21:14:14.676665'),
+(31, 'authtoken', '0004_alter_tokenproxy_options', '2025-08-04 21:14:14.681171');
 
 -- --------------------------------------------------------
 
@@ -296,29 +330,30 @@ CREATE TABLE `main_athlete` (
   `result_time` varchar(10) NOT NULL,
   `group_id` bigint(20) NOT NULL,
   `num` smallint(5) UNSIGNED DEFAULT NULL CHECK (`num` >= 0),
-  `status` smallint(5) UNSIGNED NOT NULL CHECK (`status` >= 0)
+  `status` smallint(5) UNSIGNED NOT NULL CHECK (`status` >= 0),
+  `user` varchar(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Схема на данните от таблица `main_athlete`
 --
 
-INSERT INTO `main_athlete` (`id`, `name`, `bib_number`, `result_time`, `group_id`, `num`, `status`) VALUES
-(1, 'Иван Георгиев', 101, '0:00:00.0', 3, 31, 2),
-(2, 'Петър Иванов', 99, '0:10:30.4', 4, 0, 3),
-(3, 'Георги Георгиев', 21, '0:11:26.0', 6, 0, 3),
-(5, 'Виктор Василев', 55, '0:11:23.7', 3, 0, 3),
-(7, 'Тодор Тодоров', 1, '0:01:52.8', 6, 0, 3),
-(8, 'Петър Петров', 2, '0:11:54.2', 3, 0, 3),
-(9, 'Славчо Друмев', 5, '0:00:00.0', 3, 27, 2),
-(10, 'Минчо Празников', 6, '0:01:48.5', 6, 1, 3),
-(11, 'Питър Пан', 8, '0:11:48.4', 3, 0, 3),
-(12, 'Васил Викторов', 32, '0:00:00.0', 3, 30, 2),
-(13, 'Васил Василев', 35, '0:05:48.2', 4, 0, 3),
-(14, 'Светослав Карагеоргиев', 66, '0:00:00.0', 4, 28, 2),
-(15, 'Мария Иванова', 7, '0:00:15.0', 2, 0, 3),
-(16, 'Георги Георгиев', 9, '0:00:44.7', 5, 0, 3),
-(17, 'Петко Петров', 3, '0:00:00.0', 5, 999, 1);
+INSERT INTO `main_athlete` (`id`, `name`, `bib_number`, `result_time`, `group_id`, `num`, `status`, `user`) VALUES
+(1, 'Иван Георгиев', 101, '0:00:00.0', 3, 48, 2, 'М'),
+(2, 'Петър Иванов', 99, '0:00:00.0', 4, 999, 1, 'М'),
+(3, 'Георги Георгиев', 21, '0:00:00.0', 6, 999, 1, 'М'),
+(5, 'Виктор Василев', 55, '0:00:00.0', 3, 999, 1, 'М'),
+(7, 'Тодор Тодоров', 1, '0:00:00.0', 6, 999, 1, 'М'),
+(8, 'Петър Петров', 2, '0:00:00.0', 3, 999, 1, 'М'),
+(9, 'Славчо Друмев', 5, '0:00:00.0', 3, 999, 1, 'М'),
+(10, 'Минчо Празников', 6, '0:00:00.0', 6, 999, 1, 'М'),
+(11, 'Питър Пан', 8, '0:00:00.0', 3, 999, 1, 'М'),
+(12, 'Васил Викторов', 32, '0:00:00.0', 3, 999, 1, 'М'),
+(13, 'Васил Василев', 35, '0:00:00.0', 4, 49, 2, 'М'),
+(14, 'Светослав Карагеоргиев', 66, '0:02:58.5', 4, 0, 3, 'М'),
+(15, 'Мария Иванова', 7, '0:00:00.0', 2, 47, 2, 'М'),
+(16, 'Георги Георгиев', 9, '0:03:31.4', 5, 0, 3, 'М'),
+(17, 'Петко Петров', 3, '0:00:00.0', 5, 999, 1, 'М');
 
 -- --------------------------------------------------------
 
@@ -339,7 +374,7 @@ CREATE TABLE `main_competition` (
 --
 
 INSERT INTO `main_competition` (`id`, `name`, `start_time`, `next_num`, `status`) VALUES
-(1, 'ТОДОРКА VERTICAL', '2025-08-04 09:41:41.359731', 32, 3);
+(1, 'ТОДОРКА VERTICAL', '2025-08-05 13:14:29.651638', 50, 3);
 
 -- --------------------------------------------------------
 
@@ -368,6 +403,13 @@ INSERT INTO `main_group` (`id`, `name`, `comment`) VALUES
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Индекси за таблица `authtoken_token`
+--
+ALTER TABLE `authtoken_token`
+  ADD PRIMARY KEY (`key`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
 -- Индекси за таблица `auth_group`
@@ -481,7 +523,7 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT for table `auth_user`
@@ -511,13 +553,13 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `main_athlete`
@@ -540,6 +582,12 @@ ALTER TABLE `main_group`
 --
 -- Ограничения за дъмпнати таблици
 --
+
+--
+-- Ограничения за таблица `authtoken_token`
+--
+ALTER TABLE `authtoken_token`
+  ADD CONSTRAINT `authtoken_token_user_id_35299eff_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`);
 
 --
 -- Ограничения за таблица `auth_group_permissions`

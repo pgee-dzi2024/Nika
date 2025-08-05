@@ -24,4 +24,4 @@ class AthleteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Athlete
-        fields = ['id', 'name', 'bib_number', 'result_time', 'num', 'status', 'group', 'group_id']
+        fields = ['id', 'name', 'bib_number', 'result_time', 'num', 'status', 'group', 'group_id','user']

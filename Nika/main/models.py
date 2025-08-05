@@ -62,6 +62,7 @@ class Athlete(models.Model):
         related_name='athletes',
         verbose_name='Група/категория'
     )
+    user = models.CharField('Създадено от', max_length=1, default='М')
 
     def __str__(self):
         return f'{self.name} ({self.bib_number})'
@@ -69,8 +70,3 @@ class Athlete(models.Model):
     class Meta:
         verbose_name = 'състезател'
         verbose_name_plural = 'Състезатели'
-
-
-
-
-
