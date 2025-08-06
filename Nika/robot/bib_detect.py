@@ -7,10 +7,14 @@ from paddleocr import PaddleOCR
 pip install paddlepaddle
 
 # 2. За GPU (най-често за лаптоп с RTX и CUDA 11.2):
-pip install paddlepaddle-gpu==2.5.2.post112
+pip install paddlepaddle-gpu==2.5.2.post112 по някаква причина не работи
 
 # 3. PaddleOCR (ако още не си)
 pip install paddleocr
+
+
+
+python -m pip install paddlepaddle-gpu==3.1.0 -i https://www.paddlepaddle.org.cn/packages/stable/cu129/
 """
 # Настройки
 CROP_TOP = 0.3  # Горна граница за crop - 30% отгоре махаме

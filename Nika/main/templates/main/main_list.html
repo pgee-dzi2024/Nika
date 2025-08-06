@@ -221,7 +221,10 @@
                                                         </div>
                                                         <div class="col-lg-1 col-md-1 col-sm-6 col-2">
                                                             <h5 class="title">
-                                                                [[ athlete.user ]]
+                                                                [[ athlete.user ]]&nbsp;
+                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                   @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
                                                             </h5>
                                                         </div>
                                                     </div>
@@ -283,7 +286,10 @@
                                                             </div>
                                                             <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
                                                                 <h5 class="title" v-if="athlete.status>0">
-                                                                    [[ athlete.user ]]
+                                                                    [[ athlete.user ]]&nbsp;
+                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                   @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
                                                                 </h5>
                                                             </div>
                                                         </div>
@@ -556,6 +562,20 @@
                                <i class="feather-check"></i><span>&nbsp;Потвърди</span>
                             </button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Диалог за показване на снимки -->
+        <div id="showPhotoModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content wrapper top-flashlight leftside light-xl">
+                    <button class="close-button" data-bs-dismiss="modal">
+                        <i class="feather-x"></i>
+                    </button>
+                    <h5 class="title a">Фотофиниш</h5>
+                    <div style="display: flex; align-items: center;" v-for="photo in photoList">
+                        <img :src="photo.image" v-if="photo.athlete == c_athlete.id">
                     </div>
                 </div>
             </div>

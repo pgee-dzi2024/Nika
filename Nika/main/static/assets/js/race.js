@@ -10,6 +10,7 @@ const App = {
             showMode: 0, // 0 - Регистрация; 1 - Старт; 2 - Състезание; 3 - Класиране
             startList: [],
             groupsList: [],
+            photoList: [],
             c_athlete: {
                 id: 1,
                 name: "Иван Петров",
@@ -73,11 +74,13 @@ const App = {
                     }
                     if(this.sysParams.status === 2) { // ако е в режим "състезание"
                        this.fetchStartTime()
+                       this.fetchPhotoList()
                     }
                     if(this.sysParams.status === 3) { //ако е в режим "класиране"
                         if (this.timerInterval) clearInterval(this.timerInterval);
                     }
                     this.loadStartList()
+                    this.fetchPhotoList()
                 })
                 .catch(error => {
                     console.error('Error fetching system parameters:', error);
@@ -114,7 +117,7 @@ const App = {
             this.c_athlete.num = this.startList[num].num
             this.c_athlete.status = this.startList[num].status
             this.c_athlete.group = this.startList[num].group
-            this.c_athlete.user = this.startList[num].user
+            this.c_athlete.user = "M"
         },
 
         changeGroup(idx) {
@@ -422,6 +425,25 @@ const App = {
             this.showMode = value;
             this.loadStartList()
         },
+
+        fetchPhotoList() {
+            axios.get('/api/athlete-photos/')
+                .then(response => {
+                    this.photoList = response.data;
+                })
+                .catch(error => {
+                    console.error("Грешка при зареждане на снимките:", error);
+                });
+        },
+
+        countPhotos(id) {
+            let count = 0;
+            this.photoList.forEach(photo => {
+                if (photo.athlete === id) {count += 1;}
+            })
+            return count;
+        },
+
 
     },
 

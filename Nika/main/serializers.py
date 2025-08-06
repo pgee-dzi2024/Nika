@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from .models import *
 
-
 class SysParamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Competition
@@ -24,4 +23,12 @@ class AthleteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Athlete
-        fields = ['id', 'name', 'bib_number', 'result_time', 'num', 'status', 'group', 'group_id','user']
+        fields = ['id', 'name', 'bib_number', 'result_time', 'num', 'status', 'group', 'group_id', 'user']
+
+
+class AthletePhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AthletePhoto
+        fields = ['id', 'athlete', 'image']
+        read_only_fields = ['athlete']
+

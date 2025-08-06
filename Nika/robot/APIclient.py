@@ -108,3 +108,18 @@ class RaceClient:
             self.start_list = resp.json()
         except (requests.RequestException, KeyError, ValueError) as e:
             print("Грешка при зареждане на стартовия лист:", e)
+
+    def save_athlete(self, athlete_id, data):
+        url = f"{self.base_url}/api/athletes/{athlete_id}/"
+        headers = {"Content-Type": "application/json"}
+        return requests.patch(url, json=data, headers=headers)
+
+    def mark_first_as_finished(self):
+        ath = 0
+        for athlete in self.start_list:
+            if athlete['status'] == 2:  # 0 - дисквалифициран, 1 - регистриран, 2 - финиширащ, 3 - финиширал
+                ath = athlete['id']
+                self.save_athlete(athlete['id'], {"status": "3", 'result_time': self.format_timer(), 'num': 0,
+                                                  'user': 'A'})
+                break
+        return ath

@@ -70,3 +70,19 @@ class Athlete(models.Model):
     class Meta:
         verbose_name = 'състезател'
         verbose_name_plural = 'Състезатели'
+
+
+class AthletePhoto(models.Model):
+    athlete = models.ForeignKey(
+        Athlete,
+        related_name="photos",
+        on_delete=models.CASCADE
+    )
+    image = models.ImageField(upload_to="athlete_photos/")
+
+    def __str__(self):
+        return f"Photo for {self.athlete} ({self.id})"
+
+    class Meta:
+        verbose_name = 'Снимка'
+        verbose_name_plural = 'Снимки'

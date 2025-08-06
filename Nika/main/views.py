@@ -9,7 +9,7 @@ from django.utils.timezone import now
 
 from django.utils import timezone
 
-from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 
 def index(request):
@@ -122,3 +122,18 @@ class AthleteNumBulkUpdateView(APIView):
             {"id": a1.id, "num": a1.num},
             {"id": a2.id, "num": a2.num}
         ]})
+
+
+class AthletePhotoUploadView(APIView):
+    def post(self, request, athlete_id):
+        athlete = get_object_or_404(Athlete, id=athlete_id)
+        serializer = AthletePhotoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(athlete=athlete)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AthletePhotoListView(generics.ListAPIView):
+    queryset = AthletePhoto.objects.all()
+    serializer_class = AthletePhotoSerializer
