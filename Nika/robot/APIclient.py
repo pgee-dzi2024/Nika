@@ -88,8 +88,8 @@ class RaceClient:
         except (requests.RequestException, KeyError, ValueError) as e:
             print("Грешка при вземане на start_time:", e)
 
-    def format_timer(self):
-        seconds = ((int(time.time() * 1000) - self.time_offset) - self.start_time) / 1000
+    def format_timer(self, ofs=0):
+        seconds = ((int(time.time() * 1000) - self.time_offset) - self.start_time) / 1000 +0.1*ofs
         total_seconds = int(seconds)
         deci = int((seconds - total_seconds) * 10)  # десети
 
@@ -114,12 +114,15 @@ class RaceClient:
         headers = {"Content-Type": "application/json"}
         return requests.patch(url, json=data, headers=headers)
 
-    def mark_first_as_finished(self):
-        ath = 0
+    def mark_first_as_finished(self, pers=1):
+        ath = []
+        p = pers
         for athlete in self.start_list:
             if athlete['status'] == 2:  # 0 - дисквалифициран, 1 - регистриран, 2 - финиширащ, 3 - финиширал
-                ath = athlete['id']
+                ath.append(athlete['id'])
                 self.save_athlete(athlete['id'], {"status": "3", 'result_time': self.format_timer(), 'num': 0,
                                                   'user': 'A'})
-                break
+                p -= 1
+                if p == 0:
+                    break
         return ath

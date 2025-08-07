@@ -51,6 +51,7 @@ def count_people():
     while True:
         ret, frame = cap.read()
         if not ret:
+            # print('err!!!!')
             break
 
             # Вземи актуалните координати (в test режим - на всеки кадър)
