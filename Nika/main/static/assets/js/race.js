@@ -19,6 +19,7 @@ const App = {
                 num: 999,
                 status: 1,
                 user: 'M',
+                gender: true,
                 group: {
                     id: 3,
                     name: "Елит",
@@ -40,30 +41,66 @@ const App = {
             updateInterval: null, //таймер за обновяване
             updateMode:false, // режим на обновяване (false - не променя showMode; true - променя го
             oldUpdateMode:false,
+
+            count:{
+                reg_male: 0,
+                reg_female: 0,
+                fin_male: 0,
+                fin_female: 0,
+                started_male: 0,
+                started_female: 0,
+            },
+            groupByGender: true,
+            groupByCat: true,
+            orderShow3: true,
+
+
         }
     },
 
     methods: {
+        orderShowAthlete(group_id, num){
+            let result = false
+            if (group_id === 0){
+                if (this.groupByCat) {
+                    if (group_id === this.startList[num].group.id) result = true
+                }
+                else result = true
+            }
+            else result = true
+            if ((this.startList[num].result_time === 'NS') || (this.startList[num].result_time === 'DQ')
+                || (this.startList[num].result_time === '-:--:--.-')) result = false
+
+            return result;
+        },
+
         closeRegistration() {
             this.updateStatus(1)
             this.showMode = 1
             this.toggleRightPanel()
         },
-
         closeCompetition() {
             this.updateStatus(3)
             this.showMode = 3
-            this.loadStartList()
             if (this.timerInterval) clearInterval(this.timerInterval);
+            axios({
+                method: 'POST',
+                url: '/api/athletes/disqualify/',
+                headers: {
+                    'X-CSRFToken': CSRF_TOKEN,
+                },
+            })
+                .then(response => {
+                    this.loadStartList()
+                })
+                .catch(e => alert('Грешка при прекратяване на състезанието!'));
         },
-
         toggleRightPanel() {
             $(".popup-dashboardright-btn").toggleClass("collapsed");
             $(".popup-dashboardright-section").toggleClass("collapsed");
             $(".rbt-main-content").toggleClass("area-right-expanded");
             $(".rbt-static-bar").toggleClass("area-right-expanded");
         },
-
         loadSysParams() {
             const old_status = this.sysParams.status
             axios.get('/api/sysparams/')
@@ -86,7 +123,6 @@ const App = {
                     console.error('Error fetching system parameters:', error);
                 });
         },
-
         loadStartList() {
             const sk = this.showMode
             axios.get('api/athletes/sort/' + sk + '/')
@@ -98,7 +134,6 @@ const App = {
                     console.error('Error fetching start list:', error);
                 });
         },
-
         loadGroupsList() {
             axios.get('/api/groups/')
                 .then(response => {
@@ -108,7 +143,6 @@ const App = {
                     console.error('Error fetching groups list:', error);
                 });
         },
-
         editAthlete(num) {
             this.c_athlete.id = this.startList[num].id
             this.c_athlete.name = this.startList[num].name
@@ -118,23 +152,22 @@ const App = {
             this.c_athlete.status = this.startList[num].status
             this.c_athlete.group = this.startList[num].group
             this.c_athlete.user = "M"
+            this.c_athlete.gender = this.startList[num].gender
         },
-
         changeGroup(idx) {
             this.c_athlete.group = this.groupsList[idx]
         },
-
         newAthlete() {
             this.c_athlete.id = 0
             this.c_athlete.name = ""
             this.c_athlete.bib_number = ""
-            this.c_athlete.result_time = "0:00:00.0"
+            this.c_athlete.result_time = "-:--:--.-"
             this.c_athlete.num = 999
             this.c_athlete.status = 1
             this.c_athlete.user = 'M'
+            this.c_athlete.gender = true
             this.c_athlete.group = this.groupsList[0]
         },
-
         saveAthlete() {
             let payload = {
                 name: this.c_athlete.name,
@@ -143,7 +176,8 @@ const App = {
                 num: this.c_athlete.num,
                 status: this.c_athlete.status,
                 group_id: this.c_athlete.group.id,
-                user: this.c_athlete.user
+                user: this.c_athlete.user,
+                gender: this.c_athlete.gender,
             };
 
             const config = {
@@ -171,7 +205,6 @@ const App = {
                     });
             }
         },
-
         deleteAthlete() {
             axios.delete('/api/athletes/' + this.c_athlete.id + '/', {
                 headers: {'X-CSRFToken': CSRF_TOKEN}
@@ -184,12 +217,10 @@ const App = {
                     console.error(e);
                 });
         },
-
         countAthletesInGroup(groupId) {
             if (!this.startList) return 0;
             return this.startList.filter(a => a.group && a.group.id === groupId).length;
         },
-
         focusDivById(id) {
             console.log('Опитвам да фокусирам id=', id)
             const el = document.getElementById(id);
@@ -199,20 +230,19 @@ const App = {
                 setTimeout(() => el.classList.remove('active-focus'), 1200);
             }
         },
-
         checkAllFilters() {
-            if (this.filter.waitingToFinish && this.filter.disqualified && this.filter.finished) {
+            if (this.filter.waitingToFinish && this.filter.disqualified && this.filter.finished && this.filter.registered) {
                 this.filter.waitingToFinish = false
                 this.filter.disqualified = false
                 this.filter.finished = false
+                this.filter.registered = false
             } else {
                 this.filter.waitingToFinish = true
                 this.filter.disqualified = true
                 this.filter.finished = true
-                this.filter.finished = true
+                this.filter.registered = true
             }
         },
-
         fetchStartTime() {
             axios.get('/api/competition/time/')
                 .then(response => {
@@ -279,7 +309,7 @@ const App = {
         setStatus(num, value) {
             /* Променя статуса на състезател с пореден номер num в списъка
                Новата стойност на статуса е value
-                  0 - дисквалифициран, 1 - регистриран, 2 - финиширащ, 3 - финиширал
+                  -1 - не е стартирал, 0 - дисквалифициран, 1 - регистриран, 2 - финиширащ, 3 - финиширал
             */
             const html_id = 'r_' + this.c_athlete.bib_number
             if (value === 2) {
@@ -293,12 +323,15 @@ const App = {
                 this.c_athlete.num = 0
             } else if (this.c_athlete.status === 0) {
                 this.c_athlete.result_time = 'DQ';
+                this.c_athlete.num = 9990;
+            } else if (this.c_athlete.status === -1) {
+                this.c_athlete.result_time = 'NS';
                 this.c_athlete.num = 9999;
             } else {
                 if (this.c_athlete.status === 1) {
                     this.c_athlete.num = 999
                 }
-                this.c_athlete.result_time = '0:00:00.0';
+                this.c_athlete.result_time = "-:--:--.-";
             }
 
             if (value === 2) {
@@ -384,42 +417,111 @@ const App = {
             проверка за дали даден състезател треябва да се показва в списъка според текущия филтър
                0 - дисквалифициран, 1 - регистриран, 2 - финиширащ, 3 - финиширал
             */
-            if (this.filter.waitingToFinish && this.filter.disqualified && this.filter.finished && this.filter.registered) {return true} //всички
-            else if (this.filter.waitingToFinish && (this.startList[num].status===2)) {return true} // финиширащи
-            else if (this.filter.disqualified && (this.startList[num].status===0)) {return true} // дисквалифицирани
-            else if (this.filter.finished && (this.startList[num].status===3)) {return true} // финиширали
-            else return this.filter.registered && (this.startList[num].status === 1);
+            if (this.startList[num].status===-1) return false
+            else {
+                if (this.filter.waitingToFinish && this.filter.disqualified && this.filter.finished && this.filter.registered) {
+                    return true
+                } //всички
+                else if (this.filter.waitingToFinish && (this.startList[num].status === 2)) {
+                    return true
+                } // финиширащи
+                else if (this.filter.disqualified && (this.startList[num].status === 0)) {
+                    return true
+                } // дисквалифицирани
+                else if (this.filter.finished && (this.startList[num].status === 3)) {
+                    return true
+                } // финиширали
+                else return this.filter.registered && (this.startList[num].status === 1);
+            }
         },
 
         updateGroupStats() {
             // За всяка група – инициализирай/добави полета reg и fin
+            let currentNumber = 1;
+            let currentNumber_female     = 1;
+            if (!this.groupByCat){
+                this.startList.forEach(athlete => {
+                    if (athlete.status === 3) {
+                        if (this.groupByGender) {
+                            if (athlete.gender) athlete.num = currentNumber++;
+                            else athlete.num = currentNumber_female++;
+                        }
+                        else athlete.num = currentNumber++;
+                    }
+                    })
+                }
             this.groupsList.forEach(group => {
                 // Ако ги няма, добави ги, ако има – занули!
-                if (typeof group.reg === 'undefined') group.reg = 0;
-                if (typeof group.fin === 'undefined') group.fin = 0;
-                group.reg = 0;
-                group.fin = 0;
+                if (typeof group.reg_male === 'undefined') group.reg_male = 0;
+                if (typeof group.reg_female === 'undefined') group.reg_female = 0;
+                if (typeof group.fin_male === 'undefined') group.fin_male = 0;
+                if (typeof group.fin_female === 'undefined') group.fin_female = 0;
+                if (typeof group.started_male === 'undefined') group.started_male = 0;
+                if (typeof group.started_female === 'undefined') group.started_female = 0;
+
+                group.reg_male = 0;
+                group.reg_female = 0;
+                group.fin_male = 0;
+                group.fin_female = 0;
+                group.started_male = 0;
+                group.started_female = 0;
 
                 // Намери стартови номера в startList, които са от тази група
-                let currentNumber = 1;
+                currentNumber = 1;
+                currentNumber_female     = 1;
+
                 this.startList.forEach(athlete => {
                     if (athlete.group && athlete.group.id === group.id) {
-                        // Присвои пореден вътрешен номер в групата (ще се казва group_num, по твой избор)
-                        if (athlete.status === 3) athlete.num = currentNumber++;
-                        group.reg++; // Брой записани (регистрирани)
-                        if (athlete.status === 3) group.fin++; // Брой финиширали
+                        // Присвои пореден вътрешен номер в групата
+                        if ((athlete.status === 3) && this.groupByCat){
+                            if (this.groupByGender) {
+                                if (athlete.gender) athlete.num = currentNumber++;
+                                else athlete.num = currentNumber_female++;
+                            }
+                            else athlete.num = currentNumber++;
+                        }
+
+                        if (athlete.gender) {
+                            group.reg_male++;
+                        } // Брой записани (регистрирани) мъже
+                        else {
+                            group.reg_female++;
+                        } // Брой записани (регистрирани) жени
+                        if (athlete.status === 3) { // Брой финиширали
+                            if (athlete.gender) group.fin_male++
+                            else group.fin_female++;
+                        }
+                        if (athlete.status > -1) { // Брой стартирали
+                            if (athlete.gender) {
+                                group.started_male++
+                            }
+                            else {
+                                group.started_female++;
+                            }
+                        }
                     }
                 });
             });
+
+            this.countFinish()
         },
 
         countFinish() {
-            let count = 0;
+            this.count.reg_male = 0
+            this.count.reg_female = 0
+            this.count.fin_male = 0
+            this.count.fin_female = 0
+            this.count.started_male = 0
+            this.count.started_female = 0
             this.groupsList.forEach(group => {
-                count += group.fin;
+                this.count.reg_male += group.reg_male
+                this.count.reg_female += group.reg_female
+                this.count.fin_male += group.fin_male
+                this.count.fin_female += group.fin_female
+                this.count.started_male += group.started_male
+                this.count.started_female += group.started_female
             })
-            return count;
-            },
+        },
 
         setShowMode(value){
             this.showMode = value;
@@ -443,7 +545,6 @@ const App = {
             })
             return count;
         },
-
 
     },
 

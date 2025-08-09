@@ -23,7 +23,7 @@ class AthleteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Athlete
-        fields = ['id', 'name', 'bib_number', 'result_time', 'num', 'status', 'group', 'group_id', 'user']
+        fields = ['id', 'name', 'bib_number', 'result_time', 'num', 'status', 'group', 'group_id', 'user', 'gender']
 
 
 class AthletePhotoSerializer(serializers.ModelSerializer):

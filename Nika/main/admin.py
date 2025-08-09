@@ -16,7 +16,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 @admin.register(Athlete)
 class AthleteAdmin(admin.ModelAdmin):
-    list_display = ('name', 'bib_number', 'result_time', 'group','user')
+    list_display = ('name', 'bib_number', 'result_time', 'group',  'gender', 'user',)
     search_fields = ('name', 'bib_number')
     list_filter = ('group',)
 

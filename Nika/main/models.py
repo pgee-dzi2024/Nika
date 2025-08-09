@@ -53,8 +53,8 @@ class Athlete(models.Model):
     bib_number = models.IntegerField('Стартов номер', default=0)
     result_time = models.CharField('Време', max_length=10, default='0:00:00.0')
     num = models.PositiveSmallIntegerField('Текущ пореден номер на пристигащ състезател', null=True, default=999)
-    status = models.PositiveSmallIntegerField('Статус на състезателя',
-                                              choices=[(0, 'дисквалифициран'), (1, 'регистриран'), (2, 'финиширащ'),
+    status = models.SmallIntegerField('Статус на състезателя',
+                                              choices=[(-1, 'не е стартирал'), (0, 'дисквалифициран'), (1, 'регистриран'), (2, 'финиширащ'),
                                                        (3, 'финиширал')], default=1)
     group = models.ForeignKey(
         Group,
@@ -63,6 +63,7 @@ class Athlete(models.Model):
         verbose_name='Група/категория'
     )
     user = models.CharField('Създадено от', max_length=1, default='М')
+    gender = models.BooleanField('Пол', default=True, choices=[(True, 'мъж'), (False, 'жена'), ])
 
     def __str__(self):
         return f'{self.name} ({self.bib_number})'

@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/athletes/bulk-num-update/', AthleteNumBulkUpdateView.as_view(), name='athlete-bulk-num-update'),
     path('api/athletes/<int:athlete_id>/add_photo/', AthletePhotoUploadView.as_view(), name='athlete-add-photo'),
     path('api/athlete-photos/', AthletePhotoListView.as_view(), name='athletephoto-list'),
+    path('api/athletes/disqualify/', DisqualifyAthletesView.as_view(), name='disqualify-athletes'),
 
     path('api/competition/time/', CurrentStartTime.as_view()),
     path('api/competition/start/', StartCompetition.as_view()),

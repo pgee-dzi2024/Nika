@@ -33,16 +33,16 @@ def make_rtsp_url(cam, cfg):
 
 
 def get_line_from_config_ini(cfg):
-    sx = cfg.getint('Line', 'start_x')
-    ex = cfg.getint('Line', 'end_x')
-    thickness = cfg.getint('Line', 'thickness', fallback=4)
-    return (sx, 0, ex, 0, thickness)
+    sx_ = cfg.getint('Line', 'start_x')
+    ex_ = cfg.getint('Line', 'end_x')
+    thickness_ = cfg.getint('Line', 'thickness', fallback=4)
+    return sx_, 0, ex_, 0, thickness_
 
 
-def is_left_of_line(point, line_start, line_end):
+def is_left_of_line(point, line_start_, line_end_):
     # >0 е от едната страна, <0 от другата, 0 точно върху нея
-    return ((line_end[0] - line_start[0]) * (point[1] - line_start[1]) -
-            (line_end[1] - line_start[1]) * (point[0] - line_start[0]))
+    return ((line_end_[0] - line_start_[0]) * (point[1] - line_start_[1]) -
+            (line_end_[1] - line_start_[1]) * (point[0] - line_start_[0]))
 
 
 # Създаване на парсер и четене на .ini файл - настройки на приложнието
@@ -58,11 +58,11 @@ server_token = config["server"]["token"]
 barrier_com = f'COM{config["barrier"]["com_port"]}'
 
 # свързвам се към потоците от камерите
-cam_bib = cv2.VideoCapture(rtsp_url_bib_numbers)
+# cam_bib = cv2.VideoCapture(rtsp_url_bib_numbers)
 cam_final = cv2.VideoCapture(rtsp_url_final)
 
 # иницирам серийния порт за бариерата
-ser = serial.Serial(barrier_com, 9600, timeout=1)  # провери точния порт!
+# ser = serial.Serial(barrier_com, 9600, timeout=1)  # провери точния порт!
 
 race_api = RaceClient(server_url, server_token)
 race_api.load_sys_params()
@@ -136,7 +136,7 @@ while race_api.sysParams['status'] < 3:
             left_point = (x1, y1)
             side = is_left_of_line(left_point, line_start, line_end)
             last_side = last_left_states.get(track_id, None)
-            if last_side is not None and last_side > 0 and side < 0:
+            if last_side is not None and last_side < 0 and side > 0:
                 crossed_counter += 1
                 print(f"Обект {track_id} премина линията от ляво надясно! Общо: {crossed_counter}")
             last_left_states[track_id] = side
@@ -180,5 +180,5 @@ while race_api.sysParams['status'] < 3:
 print('КРАЙ!')
 race_api.stop_sync()
 cam_final.release()
-cam_bib.release()
+# cam_bib.release()
 cv2.destroyAllWindows()

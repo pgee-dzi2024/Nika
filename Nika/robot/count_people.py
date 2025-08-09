@@ -21,7 +21,7 @@ def get_line_from_config_ini(cfg):
     sx = cfg.getint('Line', 'start_x')
     ex = cfg.getint('Line', 'end_x')
     thickness = cfg.getint('Line', 'thickness', fallback=4)
-    return (sx, 0, ex, 0, thickness)
+    return sx, 0, ex, 0, thickness
 
 
 def is_left_of_line(point, line_start, line_end):
@@ -94,7 +94,7 @@ def count_people():
             left_point = (x1, y1)
             side = is_left_of_line(left_point, line_start, line_end)
             last_side = last_left_states.get(track_id, None)
-            if last_side is not None and last_side > 0 and side < 0:
+            if last_side is not None and last_side < 0 and side > 0:
                 crossed_counter += 1
                 print(f"Обект {track_id} премина линията от ляво надясно! Общо: {crossed_counter}")
             last_left_states[track_id] = side

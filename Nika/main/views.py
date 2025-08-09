@@ -137,3 +137,13 @@ class AthletePhotoUploadView(APIView):
 class AthletePhotoListView(generics.ListAPIView):
     queryset = AthletePhoto.objects.all()
     serializer_class = AthletePhotoSerializer
+
+
+class DisqualifyAthletesView(APIView):
+    def post(self, request):
+        updated_count = Athlete.objects.filter(result_time='-:--:--.-').update(
+            status=0,
+            result_time='DQ',
+            user='A'
+        )
+        return Response({'updated': updated_count}, status=status.HTTP_200_OK)

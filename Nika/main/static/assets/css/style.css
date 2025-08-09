@@ -22176,3 +22176,7 @@ body.active-light-mode .rbt-utilize-area .rbt-default-sidebar-list li.has-submen
   margin-left: 5px;
   margin-right: 5px;
 }
+
+.crossed_out {
+  text-decoration: line-through;
+}
