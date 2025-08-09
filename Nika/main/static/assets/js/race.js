@@ -53,24 +53,17 @@ const App = {
             groupByGender: true,
             groupByCat: true,
             orderShow3: true,
+            final_show_mode:0 //
 
 
         }
     },
 
     methods: {
-        orderShowAthlete(group_id, num){
-            let result = false
-            if (group_id === 0){
-                if (this.groupByCat) {
-                    if (group_id === this.startList[num].group.id) result = true
-                }
-                else result = true
-            }
-            else result = true
+        orderShowAthlete(num){
+            let result = true
             if ((this.startList[num].result_time === 'NS') || (this.startList[num].result_time === 'DQ')
                 || (this.startList[num].result_time === '-:--:--.-')) result = false
-
             return result;
         },
 
@@ -253,21 +246,18 @@ const App = {
                     this.startTimerLoop();
                 });
         },
-
         startTimerLoop() {
             if (this.timerInterval) clearInterval(this.timerInterval);
             this.timerInterval = setInterval(() => {
                 this.timerValue = ((Date.now() - this.timeOffset) - this.startTime) / 1000;
             }, 100); // точност до 0.1 сек
         },
-
         startUpdateLoop() {
             if (this.updateInterval) clearInterval(this.updateInterval);
             this.lupdateInterval = setInterval(() => {
                 this.loadSysParams();
             }, 1000); // стартира се всяка секунда
         },
-
         startCompetition() {
             axios({
                 method: 'POST',
@@ -287,11 +277,9 @@ const App = {
                 })
                 .catch(e => alert('Грешка при стартиране!'));
         },
-
         startRace() {
             this.startCompetition()
         },
-
         formatTimer(seconds) {
             const totalSeconds = Math.floor(seconds);
             const deci = Math.floor((seconds - totalSeconds) * 10); // десети
@@ -305,7 +293,6 @@ const App = {
             // СС: винаги с водеща 0
             return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}.${deci}`;
         },
-
         setStatus(num, value) {
             /* Променя статуса на състезател с пореден номер num в списъка
                Новата стойност на статуса е value
@@ -341,7 +328,6 @@ const App = {
             this.focusDivById(html_id)
 
         },
-
         upEnable(num) {
             if (num > 0) {
                 return this.startList[num].status === this.startList[num - 1].status;
@@ -349,7 +335,6 @@ const App = {
                 return false
             }
         },
-
         downEnable(num) {
             if (num < (this.startList.length - 1)) {
                 return this.startList[num].status === this.startList[num + 1].status;
@@ -357,7 +342,6 @@ const App = {
                 return false
             }
         },
-
         updateStatus(newStatus) {
             axios.patch(
                 '/api/competition/status/',
@@ -373,7 +357,6 @@ const App = {
                     alert("Грешка при запис статуса: " + (e.response?.data?.status || "неизвестна грешка"));
                 });
         },
-
         incrementNextNum() {
             axios({
                 method: 'POST',
@@ -388,7 +371,6 @@ const App = {
                 .catch(e => alert("Грешка при увеличаване на пореден номер: " + (e.response?.data?.detail || "неизвестна грешка")));
 
         },
-
         swapNums(idx1, idx2) {
             let payload = {
                 id1: this.startList[idx1].id,
@@ -411,7 +393,6 @@ const App = {
                     console.error(e);
                 });
         },
-
         checkVisibility(num){
             /*
             проверка за дали даден състезател треябва да се показва в списъка според текущия филтър
@@ -434,22 +415,17 @@ const App = {
                 else return this.filter.registered && (this.startList[num].status === 1);
             }
         },
-
         updateGroupStats() {
-            // За всяка група – инициализирай/добави полета reg и fin
-            let currentNumber = 1;
-            let currentNumber_female     = 1;
-            if (!this.groupByCat){
-                this.startList.forEach(athlete => {
-                    if (athlete.status === 3) {
-                        if (this.groupByGender) {
-                            if (athlete.gender) athlete.num = currentNumber++;
-                            else athlete.num = currentNumber_female++;
-                        }
-                        else athlete.num = currentNumber++;
-                    }
-                    })
-                }
+            if (this.groupByGender){ // разделяне по мъже/жени ДА
+                if (this.groupByCat) this.final_show_mode = 0 // групиране по категории ДА
+                else this.final_show_mode = 1 // групиране по категории НЕ
+            }
+            else {// разделяне по мъже/жени НЕ
+                if (this.groupByCat) this.final_show_mode =2 // групиране по категории ДА
+                else this.final_show_mode = 3 // групиране по категории НЕ
+            }
+
+            // За всяка група – инициализирам/добавям полета reg, fin и started
             this.groupsList.forEach(group => {
                 // Ако ги няма, добави ги, ако има – занули!
                 if (typeof group.reg_male === 'undefined') group.reg_male = 0;
@@ -472,14 +448,6 @@ const App = {
 
                 this.startList.forEach(athlete => {
                     if (athlete.group && athlete.group.id === group.id) {
-                        // Присвои пореден вътрешен номер в групата
-                        if ((athlete.status === 3) && this.groupByCat){
-                            if (this.groupByGender) {
-                                if (athlete.gender) athlete.num = currentNumber++;
-                                else athlete.num = currentNumber_female++;
-                            }
-                            else athlete.num = currentNumber++;
-                        }
 
                         if (athlete.gender) {
                             group.reg_male++;
@@ -502,11 +470,57 @@ const App = {
                     }
                 });
             });
-
+            if (this.final_show_mode===0) this.setRankingNums_GC()
+            else if (this.final_show_mode===1) this.setRankingNums_G()
+            else if (this.final_show_mode===2) this.setRankingNums_C()
+            else this.setRankingNums_()
             this.countFinish()
         },
-
+        setRankingNums_GC(){
+         // номерира състазателите в класирането по групи и по пол
+            let currentNumber = 1;
+            let currentNumber_female     = 1;
+            this.groupsList.forEach(group => {
+                currentNumber = 1;
+                currentNumber_female     = 1;
+                this.startList.forEach(athlete => {
+                    if (athlete.group.id === group.id) {
+                        if (athlete.gender) athlete.num = currentNumber++;
+                        else athlete.num = currentNumber_female++;
+                    }
+                })
+            })
+        },
+        setRankingNums_G(){
+         // номерира състазателите в класирането по пол
+            let currentNumber = 1;
+            let currentNumber_female     = 1;
+            this.startList.forEach(athlete => {
+                if (athlete.group.id === group.id) {
+                    if (athlete.gender) athlete.num = currentNumber++;
+                    else athlete.num = currentNumber_female++;
+                }
+            })
+        },
+        setRankingNums_(){
+         // номерира състазателите без групиране
+            let currentNumber = 1;
+            this.startList.forEach(athlete => {
+                athlete.num = currentNumber++;
+            })
+        },
+        setRankingNums_C(){
+         // номерира състазателите в класирането по групи
+            let currentNumber = 1;
+            this.groupsList.forEach(group => {
+                currentNumber = 1;
+                this.startList.forEach(athlete => {
+                    athlete.num = currentNumber++;
+                })
+            })
+        },
         countFinish() {
+            // пресмята тоталите за статистиката
             this.count.reg_male = 0
             this.count.reg_female = 0
             this.count.fin_male = 0
@@ -522,12 +536,10 @@ const App = {
                 this.count.started_female += group.started_female
             })
         },
-
         setShowMode(value){
             this.showMode = value;
             this.loadStartList()
         },
-
         fetchPhotoList() {
             axios.get('/api/athlete-photos/')
                 .then(response => {
@@ -537,7 +549,6 @@ const App = {
                     console.error("Грешка при зареждане на снимките:", error);
                 });
         },
-
         countPhotos(id) {
             let count = 0;
             this.photoList.forEach(photo => {
@@ -545,7 +556,6 @@ const App = {
             })
             return count;
         },
-
     },
 
     created: function(){

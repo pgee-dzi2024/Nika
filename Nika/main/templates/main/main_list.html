@@ -249,10 +249,13 @@
                         <!-- --------------------- -->
                         <!--      Класиране        -->
                         <!-- --------------------- -->
-                        <div v-if="showMode ==3" class="content-page">
+                        <div v-if="showMode == 3" class="content-page">
                             <div class="chat-box-list pt--30">
-                                <!-- списък на участниците -->
-                                <!-- Общо -->
+                                <!-- --------------------------- -->
+                                <!--  Общо за цялото състезание  -->
+                                <!-- --------------------------- -->
+
+                                <!--  Статистика - показва се винаги  -->
                                 <div class="chat-box author-speech bg-flashlight"
                                      style="padding-bottom: 0px; margin-top: 50px;">
                                     <div class="inner">
@@ -299,42 +302,50 @@
                                         </div>
                                     </div>
                                 </div>
-                                    <h4 v-if="groupByGender && !groupByCat">Мъже</h4>
+
+                                <!--  Списък - показва се ако не е зададено групиране по категории и не е зададено групиране по пол -->
+                                <div v-if="final_show_mode==3">
                                     <div v-for="(athlete, athlete_idx) in startList">
                                         <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
                                              :id="'r_'+athlete.bib_number"  tabindex="-1"
-                                             v-if="!groupByCat && (orderShowAthlete(0, athlete_idx) &&
-                                                   ((groupByGender && (athlete.gender)) || (!groupByGender)) &&
-                                                   ((orderShow3 && (athlete.num<4)) || (!orderShow3)))">
+                                             v-if="(orderShowAthlete(athlete_idx) && ((orderShow3 && (athlete.num<4)) || (!orderShow3)))">
                                             <!-- показвам всички участници -->
                                             <div class="inner top-flashlight leftside light-xl">
                                                 <!-- Заглавна част -->
                                                 <div class="chat-section generate-section">
                                                     <div class="chat-content" style="max-width: 100%;">
                                                         <div class="row">
-                                                            <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
+                                                            <div class="col-1" style="text-align: right;">
                                                                 <h5 class="title" v-if="athlete.status>0">
                                                                     [[ athlete.num ]]
                                                                 </h5>
                                                             </div>
-                                                            <div class="col-lg-2 col-md- col-sm-6 col-2">
-                                                                <a>
-                                                                <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
-                                                                    [[ athlete.result_time ]]
+                                                            <div class="col-2">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.result_time ]]&nbsp;
+                                                                    <a data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                       @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-refresh-cw"></i></a>
                                                                 </h5>
-                                                                </a>
                                                             </div>
-                                                            <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
-                                                                <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title color-Ok">
                                                                     [[ athlete.bib_number ]]
                                                                 </h5>
                                                             </div>
-                                                            <div class="col-lg-6 col-md-6 col-sm-5 col-6">
-                                                                <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                            <div class="col-3">
+                                                                <h6 class="title color-Ok">
                                                                     [[ athlete.name ]]
                                                                 </h6>
                                                             </div>
-                                                            <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                            <div class="col-3">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.group.name ]] ([[ athlete.group.comment ]] -
+                                                                    <span v-if="athlete.gender">мъже</span>
+                                                                    <span v-if="!athlete.gender">жени</span>)
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-1" style="text-align: right;">
                                                                 <h5 class="title" v-if="athlete.status>0">
                                                                     [[ athlete.user ]]&nbsp;
                                                                 <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
@@ -348,41 +359,50 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <h4 style="margin-top: 30px;" v-if="groupByGender && groupByCat">Жени</h4>
-                                    <div v-for="(athlete, athlete_idx) in startList"
-                                         v-if="groupByGender">
+                                </div>
+
+                                <!--  Списъци мъже и жени - показва се ако не е зададено групиране по категории и е зададено групиране по пол -->
+                                <div v-if="final_show_mode==1">
+                                    <h4>Мъже</h4>
+                                    <div v-for="(athlete, athlete_idx) in startList">
                                         <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
                                              :id="'r_'+athlete.bib_number"  tabindex="-1"
-                                             v-if="(orderShowAthlete(0, athlete_idx) && (groupByGender && !athlete.gender)) && ((orderShow3 && (athlete.num<4)) || (!orderShow3))">
-                                            <!-- показвам всички участници -->
+                                             v-if="(orderShowAthlete(athlete_idx) && ((orderShow3 && (athlete.num<4)) || (!orderShow3))) && (athlete.gender)">
+                                            <!-- показвам всички участници мъже-->
                                             <div class="inner top-flashlight leftside light-xl">
-                                                <!-- Заглавна част - параметри на въпроса -->
+                                                <!-- Заглавна част -->
                                                 <div class="chat-section generate-section">
                                                     <div class="chat-content" style="max-width: 100%;">
                                                         <div class="row">
-                                                            <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
+                                                            <div class="col-1" style="text-align: right;">
                                                                 <h5 class="title" v-if="athlete.status>0">
                                                                     [[ athlete.num ]]
                                                                 </h5>
                                                             </div>
-                                                            <div class="col-lg-2 col-md- col-sm-6 col-2">
-                                                                <a>
-                                                                <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
-                                                                    [[ athlete.result_time ]]
+                                                            <div class="col-2">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.result_time ]]&nbsp;
+                                                                    <a data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                       @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-refresh-cw"></i></a>
                                                                 </h5>
-                                                                </a>
                                                             </div>
-                                                            <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
-                                                                <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title color-Ok">
                                                                     [[ athlete.bib_number ]]
                                                                 </h5>
                                                             </div>
-                                                            <div class="col-lg-6 col-md-6 col-sm-5 col-6">
-                                                                <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                            <div class="col-3">
+                                                                <h6 class="title color-Ok">
                                                                     [[ athlete.name ]]
                                                                 </h6>
                                                             </div>
-                                                            <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                            <div class="col-3">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.group.name ]] ([[ athlete.group.comment ]])
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-1" style="text-align: right;">
                                                                 <h5 class="title" v-if="athlete.status>0">
                                                                     [[ athlete.user ]]&nbsp;
                                                                 <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
@@ -397,150 +417,270 @@
                                         </div>
                                     </div>
 
-                                <!-- По категории -->
+                                    <h4 style="margin-top: 30px;">Жени</h4>
+                                    <div v-for="(athlete, athlete_idx) in startList">
+                                        <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                             :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                             v-if="(orderShowAthlete(athlete_idx) && ((orderShow3 && (athlete.num<4)) || (!orderShow3))) && (!athlete.gender)">
+                                            <!-- показвам всички участници мъже-->
+                                            <div class="inner top-flashlight leftside light-xl">
+                                                <!-- Заглавна част -->
+                                                <div class="chat-section generate-section">
+                                                    <div class="chat-content" style="max-width: 100%;">
+                                                        <div class="row">
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.num ]]
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-2 color-Ok">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.result_time ]]&nbsp;
+                                                                    <a data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                       @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-refresh-cw"></i></a>
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-1 color-Ok" style="text-align: right;">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.bib_number ]]
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-3 color-Ok">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.name ]]
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-3 color-Ok">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.group.name ]] ([[ athlete.group.comment ]])
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.user ]]&nbsp;
+                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                   @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                   </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- --------------------------- -->
+                                <!--        По категории         -->
+                                <!-- --------------------------- -->
                                 <div v-for="(group, group_idx) in groupsList" v-if="groupByCat">
-                                    <!-- Заглавна част -->
-                                    <div class="chat-box author-speech bg-flashlight"
-                                         style="padding-bottom: 0px; margin-top: 50px;" v-if="(group.reg_male+group.reg_female)>0">
-                                        <div class="inner">
-                                            <div class="chat-section">
-                                                <div class="chat-content">
-                                                    <h5 class="title">Категория "[[ group.name ]] ([[ group.comment ]])"</h5>
-                                                    <div class="row row--15">
-                                                        <div class="col-lg-12">
-                                                            <div class="rainbow-compare-table style-1">
-                                                                <table class="table-responsive">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th></th>
-                                                                            <th>Общо:</th>
-                                                                            <th>Мъже</th>
-                                                                            <th>Жени</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>Регистрирани</td>
-                                                                            <td>[[ group.reg_male+group.reg_female ]]</td>
-                                                                            <td>[[ group.reg_male ]]</td>
-                                                                            <td>[[ group.reg_female ]]</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>Стартиранли</td>
-                                                                            <td>[[ group.started_male+group.started_female ]]</td>
-                                                                            <td>[[ group.started_male ]]</td>
-                                                                            <td>[[ group.started_female ]]</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>Финиширали</td>
-                                                                            <td>[[ group.fin_male+group.fin_female ]]</td>
-                                                                            <td>[[ group.fin_male ]]</td>
-                                                                            <td>[[ group.fin_female ]]</td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
+                                    <!-- Групата се показва само ако не е празна -->
+                                    <div v-if="(group.reg_male+group.reg_female)>0">
+
+                                        <!-- Статистика -->
+                                        <div class="chat-box author-speech bg-flashlight"
+                                             style="padding-bottom: 0px; margin-top: 50px;">
+                                            <div class="inner">
+                                                <div class="chat-section">
+                                                    <div class="chat-content">
+                                                        <h5 class="title">Категория "[[ group.name ]] ([[ group.comment ]])"</h5>
+                                                        <div class="row row--15">
+                                                            <div class="col-lg-12">
+                                                                <div class="rainbow-compare-table style-1">
+                                                                    <table class="table-responsive">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th></th>
+                                                                                <th>Общо:</th>
+                                                                                <th>Мъже</th>
+                                                                                <th>Жени</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>Регистрирани</td>
+                                                                                <td>[[ group.reg_male+group.reg_female ]]</td>
+                                                                                <td>[[ group.reg_male ]]</td>
+                                                                                <td>[[ group.reg_female ]]</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Стартиранли</td>
+                                                                                <td>[[ group.started_male+group.started_female ]]</td>
+                                                                                <td>[[ group.started_male ]]</td>
+                                                                                <td>[[ group.started_female ]]</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Финиширали</td>
+                                                                                <td>[[ group.fin_male+group.fin_female ]]</td>
+                                                                                <td>[[ group.fin_male ]]</td>
+                                                                                <td>[[ group.fin_female ]]</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <!-- списък на участниците в тази група/категория) -->
-                                    <h4 v-if="(groupByGender && (group.fin_male>0))">Мъже</h4>
-                                    <div v-for="(athlete, athlete_idx) in startList"
-                                         v-if="((groupByGender && (group.fin_male>0)) || (!groupByGender && (group.fin_male+group.fin_female>0)))">
-                                        <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
-                                             :id="'r_'+athlete.bib_number"  tabindex="-1"
-                                             v-if="(orderShowAthlete(group.id, athlete_idx) &&
-                                                   ((groupByGender && (athlete.gender)) || (!groupByGender)) &&
-                                                   ((orderShow3 && (athlete.num<4)) || (!orderShow3)))">
-                                            <!-- показвам всички участници -->
-                                            <div class="inner top-flashlight leftside light-xl">
-                                                <!-- Заглавна част -->
-                                                <div class="chat-section generate-section">
-                                                    <div class="chat-content" style="max-width: 100%;">
-                                                        <div class="row">
-                                                            <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
-                                                                <h5 class="title" v-if="athlete.status>0">
-                                                                    [[ athlete.num ]]
-                                                                </h5>
-                                                            </div>
-                                                            <div class="col-lg-2 col-md- col-sm-6 col-2">
-                                                                <a>
-                                                                <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
-                                                                    [[ athlete.result_time ]]
-                                                                </h5>
-                                                                </a>
-                                                            </div>
-                                                            <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
-                                                                <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
-                                                                    [[ athlete.bib_number ]]
-                                                                </h5>
-                                                            </div>
-                                                            <div class="col-lg-6 col-md-6 col-sm-5 col-6">
-                                                                <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
-                                                                    [[ athlete.name ]]
-                                                                </h6>
-                                                            </div>
-                                                            <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
-                                                                <h5 class="title" v-if="athlete.status>0">
-                                                                    [[ athlete.user ]]&nbsp;
-                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
-                                                                   @click="editAthlete(athlete_idx)">
-                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
-                                                                </h5>
-                                                            </div>
+
+                                        <!-- Списък на всички участници от категорията без групиране по пол -->
+                                        <div v-if="!groupByGender">
+                                            <div v-for="(athlete, athlete_idx) in startList">
+                                                <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                                     :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                                     v-if="orderShowAthlete(athlete_idx) && (athlete.group.id == group.id) &&
+                                                           ((orderShow3 && (athlete.num<4)) || (!orderShow3))">
+                                                    <div class="inner top-flashlight leftside light-xl">
+                                                        <!-- Заглавна част -->
+                                                        <div class="chat-section generate-section">
+                                                            <div class="chat-content" style="max-width: 100%;">
+                                                                <div class="row">
+                                                                    <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.num ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md- col-sm-6 col-2">
+                                                                        <h5 class="title color-Ok">
+                                                                            [[ athlete.result_time ]]&nbsp;
+                                                                            <a data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                               @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-refresh-cw"></i></a>
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
+                                                                        <h5 class="title color-Ok">
+                                                                            [[ athlete.bib_number ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-6 col-md-6 col-sm-5 col-6">
+                                                                        <h6 class="title color-Ok">
+                                                                            [[ athlete.name ]]
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.user ]]&nbsp;
+                                                                            <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                               @click="editAthlete(athlete_idx)">
+                                                                                <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                           </div>
                                                         </div>
-                                                   </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <h4 style="margin-top: 30px;" v-if="groupByGender && (group.fin_female>0)">Жени</h4>
-                                    <div v-for="(athlete, athlete_idx) in startList"
-                                         v-if="groupByGender && (group.fin_female>0)">
-                                        <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
-                                             :id="'r_'+athlete.bib_number"  tabindex="-1"
-                                             v-if="(orderShowAthlete(group.id, athlete_idx) && (groupByGender && !athlete.gender)) && ((orderShow3 && (athlete.num<4)) || (!orderShow3))">
-                                            <!-- показвам всички участници -->
-                                            <div class="inner top-flashlight leftside light-xl">
-                                                <!-- Заглавна част - параметри на въпроса -->
-                                                <div class="chat-section generate-section">
-                                                    <div class="chat-content" style="max-width: 100%;">
-                                                        <div class="row">
-                                                            <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
-                                                                <h5 class="title" v-if="athlete.status>0">
-                                                                    [[ athlete.num ]]
-                                                                </h5>
-                                                            </div>
-                                                            <div class="col-lg-2 col-md- col-sm-6 col-2">
-                                                                <a>
-                                                                <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
-                                                                    [[ athlete.result_time ]]
-                                                                </h5>
-                                                                </a>
-                                                            </div>
-                                                            <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
-                                                                <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
-                                                                    [[ athlete.bib_number ]]
-                                                                </h5>
-                                                            </div>
-                                                            <div class="col-lg-6 col-md-6 col-sm-5 col-6">
-                                                                <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
-                                                                    [[ athlete.name ]]
-                                                                </h6>
-                                                            </div>
-                                                            <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
-                                                                <h5 class="title" v-if="athlete.status>0">
-                                                                    [[ athlete.user ]]&nbsp;
-                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
-                                                                   @click="editAthlete(athlete_idx)">
-                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
-                                                                </h5>
-                                                            </div>
+
+                                        <!-- списък на участниците в тази категория групирани по мъже/жени -->
+                                        <div v-if="groupByGender">
+                                            <h4 v-if="group.fin_male>0">Мъже</h4>
+                                            <div v-for="(athlete, athlete_idx) in startList">
+                                                <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                                     :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                                     v-if="orderShowAthlete(athlete_idx) && athlete.gender &&
+                                                           (athlete.group.id == group.id) &&
+                                                           ((orderShow3 && (athlete.num<4)) || (!orderShow3))">
+                                                    <div class="inner top-flashlight leftside light-xl">
+                                                        <!-- Заглавна част -->
+                                                        <div class="chat-section generate-section">
+                                                            <div class="chat-content" style="max-width: 100%;">
+                                                                <div class="row">
+                                                                    <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.num ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md- col-sm-6 col-2">
+                                                                        <a>
+                                                                        <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.result_time ]]&nbsp;
+                                                                            <a data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                               @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-refresh-cw"></i></a>
+                                                                        </h5>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
+                                                                        <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.bib_number ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-6 col-md-6 col-sm-5 col-6">
+                                                                        <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.name ]]
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.user ]]&nbsp;
+                                                                        <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                           @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                           </div>
                                                         </div>
-                                                   </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <h4 v-if="group.fin_female>0">Жени</h4>
+                                            <div v-for="(athlete, athlete_idx) in startList">
+                                                <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                                     :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                                     v-if="orderShowAthlete(athlete_idx) && (!athlete.gender) &&
+                                                           (athlete.group.id == group.id) &&
+                                                           ((orderShow3 && (athlete.num<4)) || (!orderShow3))">
+                                                    <div class="inner top-flashlight leftside light-xl">
+                                                        <!-- Заглавна част -->
+                                                        <div class="chat-section generate-section">
+                                                            <div class="chat-content" style="max-width: 100%;">
+                                                                <div class="row">
+                                                                    <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.num ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md- col-sm-6 col-2">
+                                                                        <a>
+                                                                        <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.result_time ]]&nbsp;
+                                                                            <a data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                               @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-refresh-cw"></i></a>
+                                                                        </h5>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
+                                                                        <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.bib_number ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-6 col-md-6 col-sm-5 col-6">
+                                                                        <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.name ]]
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.user ]]&nbsp;
+                                                                        <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                           @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                           </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -708,6 +848,7 @@
                                         <label class="custom-control-label d-flex align-items-center"
                                                for="orderShow3"> само първите 3 </label>
                                     </li>
+                                    <li>режим: [[ final_show_mode ]]</li>
                                 </ul>
                             </div>
                         </div>
@@ -750,7 +891,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="custom-control col-lg-2 align-items-end">
+                        <div class="custom-control col-lg-1 align-items-end">
                             Пол:
                         </div>
                         <div class="custom-control custom-checkbox col-lg-2 align-items-end cb-ok-align">
@@ -762,6 +903,12 @@
                                    :checked="!c_athlete.gender"
                                    @click="c_athlete.gender=!c_athlete.gender">
                             <label class="custom-control-label d-flex align-items-center" for="editGF">жена</label>
+                        </div>
+                        <div class="custom-control col-lg-1 align-items-end"></div>
+                        <div class="form-group col-lg-4 col-md-4 col-sm-12 col-4" v-if="showMode == 3">
+                            <label for="editTime">Време: </label>
+                            <input type="text" class="form-control"
+                                   id="editTime" maxlength="20" size="20" v-model="c_athlete.result_time">
                         </div>
                     </div>
 
