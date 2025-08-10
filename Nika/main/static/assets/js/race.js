@@ -66,7 +66,6 @@ const App = {
                 || (this.startList[num].result_time === '-:--:--.-')) result = false
             return result;
         },
-
         closeRegistration() {
             this.updateStatus(1)
             this.showMode = 1

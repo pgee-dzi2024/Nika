@@ -72,6 +72,15 @@ class RaceClient:
         except (requests.RequestException, KeyError, ValueError) as e:
             print("Грешка при получаване на системните параметри:", e)
 
+    def load_groups(self):
+        try:
+            resp = self.session.get(f"{self.base_url}/api/groups/")
+            resp.raise_for_status()
+            self.groups_list = resp.json()
+
+        except (requests.RequestException, KeyError, ValueError) as e:
+            print("Грешка при получаване на списъка на категориите:", e)
+
     def update_timer_params(self):
         try:
             resp = self.session.get(f"{self.base_url}/api/competition/time/")
