@@ -59,8 +59,7 @@ class RaceClient:
         if self._sync_thread is not None:
             self._sync_thread.join(timeout=2)
 
-    # Всички API-действия са самообновяващи свойства
-
+    # Всички API-действия са самообновяващи се свойства
     def load_sys_params(self):
         try:
             resp = self.session.get(f"{self.base_url}/api/sysparams/")
@@ -77,7 +76,6 @@ class RaceClient:
             resp = self.session.get(f"{self.base_url}/api/groups/")
             resp.raise_for_status()
             self.groups_list = resp.json()
-
         except (requests.RequestException, KeyError, ValueError) as e:
             print("Грешка при получаване на списъка на категориите:", e)
 
