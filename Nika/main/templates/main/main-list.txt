@@ -1,0 +1,1013 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block left_panel %}
+{% include 'main/left_panel_list.html' %}
+{% endblock %}
+
+{% block lef_panel_icon%}
+                                <div class="expand-btn-grp @@display-class" xmlns="http://www.w3.org/1999/html">
+                                    <button class="bg-solid-primary popup-dashboardright-btn">
+                                        <i class="feather-sidebar right"></i>
+                                    </button>
+                                </div>
+{% endblock %}
+
+{% block main_content %}
+            <!-- Main content -->
+            <div class="rbt-main-content">
+                <div class="rbt-daynamic-page-content">
+                    <!-- Start Page title  -->
+                    <div class="chatenai-separator">
+                        <img class="w-100 separator-dark"
+                             src="{% static 'assets/images/separator/separator-top.svg' %}" alt="separator">
+                        <img class="w-100 separator-light"
+                             src="{% static 'assets/images/light/separator/separator-top.svg' %}" alt="separator">
+                    </div>
+                    <div class="breadcrumb-area breadcarumb-style1 pt--30 pb--30">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="breadcrumb-inner text-center">
+                                        <h1 v-if="showMode ==0" class="title theme-gradient h2">Регистрация</h1>
+                                        <h1 v-if="showMode ==1" class="title theme-gradient h2">Старт</h1>
+                                        <h1 v-if="showMode ==2" class="title theme-gradient h2">Състезание</h1>
+                                        <h1 v-if="showMode ==3" class="title theme-gradient h2">Класиране</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Page title  -->
+                    <div class="chatenai-separator">
+                        <img class="w-100 separator-dark" src="{% static 'assets/images/separator/separator-bottom.svg' %}" alt="separator">
+                        <img class="w-100 separator-light" src="{% static 'assets/images/light/separator/separator-bottom.svg' %}" alt="separator">
+                    </div>
+<!-- ************************************************************************* -->
+                    <!-- Dashboard Center Content -->
+                    <div class="rbt-dashboard-content">
+                        <!-- --------------------- -->
+                        <!--      Регистрация      -->
+                        <!-- --------------------- -->
+                        <div v-if="showMode ==0" class="content-page">
+                            <div class="chat-box-list pt--30">
+                                <!-- списък на участниците -->
+                                <div v-for="(athlete, athlete_idx) in startList">
+                                    <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                         :id="'athlete'+athlete_idx">
+                                        <!-- показвам всички участници -->
+                                        <div class="inner top-flashlight leftside light-xl">
+                                            <!-- Заглавна част-->
+                                            <div class="chat-section generate-section">
+                                                <div class="chat-content" style="max-width: 100%;">
+                                                    <div class="row">
+                                                        <div class="col-lg-1 col-md-1 col-sm-6 col-2">
+                                                            <h4 class="title">
+                                                                [[ athlete.bib_number ]]
+                                                            </h4>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-10">
+                                                            <h6 class="title"  :class="{'crossed_out':athlete.result_time == 'NS',}">
+                                                                [[ athlete.name ]]
+                                                            </h6>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-12">
+                                                            [[ athlete.group.name ]] ([[ athlete.group.comment ]])
+                                                        </div>
+                                                        <!-- copy -->
+                                                        <div class="col-lg-5 col-md-5 col-sm-5 col-12 d-flex justify-content-end">
+                                                            <button class="react-btn btn-default btn-small btn-border"
+                                                                    style="font-size: 12px; color: #0d6efd; border-color: rgb(7 3 144);"
+                                                                    @click="setStatus(athlete_idx, -1)"  v-if="athlete.status > -1">
+                                                                <i class="feather-user-x"></i><span>&nbsp;Не е стартирал&nbsp;</span>
+                                                            </button>
+                                                            <button class="react-btn btn-default btn-small btn-border bg-color-primary button-margins"
+                                                                    style="font-size: 12px;"
+                                                                    @click="setStatus(athlete_idx, 1)"  v-if="athlete.status == -1">
+                                                                <i class="feather-user-x"></i><span>&nbsp;Ще стартира&nbsp;</span>
+                                                            </button>
+                                                            &nbsp;&nbsp;
+                                                            <button class="react-btn btn-default btn-small btn-border"
+                                                                    style="font-size: 12px; color: red; border-color: #5c0000d4;"
+                                                                    @click="editAthlete(athlete_idx)"
+                                                                    data-bs-toggle="modal" data-bs-target="#deleteAthleteModal">
+                                                                <i class="feather-user-x"></i><span>&nbsp;Премахни&nbsp;</span>
+                                                            </button>
+                                                            &nbsp;&nbsp;
+                                                            <button class="react-btn btn-default btn-small btn-border"
+                                                                    @click="editAthlete(athlete_idx)"
+                                                                    data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                    style="font-size: 12px; color: green; border-color: #013401;">
+                                                                <i class="feather-edit"></i><span>&nbsp;Данни&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- --------------------- -->
+                        <!--         Старт         -->
+                        <!-- --------------------- -->
+                        <div v-if="showMode ==1" class="content-page">
+                            <div class="chatenai-separator">
+                                <img class="w-100 separator-dark"
+                                     src="{% static 'assets/images/separator/separator-top.svg' %}" alt="separator">
+                                <img class="w-100 separator-light"
+                                     src="{% static 'assets/images/light/separator/separator-top.svg' %}" alt="separator">
+                            </div>
+                            <div class="breadcrumb-area breadcarumb-style1 pt--30 pb--30">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="breadcrumb-inner text-center">
+                                                <h1 class="title">00:00:00:0</h1>
+                                                <button class="react-btn btn-default btn-default btn-border bg-color-danger"
+                                                        @click="startRace()" v-if="sysParams.status==1">
+                                                    <i class="feather-x"></i> <span>&nbspС Т А Р Т </span>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chatenai-separator">
+                                <img class="w-100 separator-dark" src="{% static 'assets/images/separator/separator-bottom.svg' %}" alt="separator">
+                                <img class="w-100 separator-light" src="{% static 'assets/images/light/separator/separator-bottom.svg' %}" alt="separator">
+                            </div>
+                        </div>
+                        <!-- --------------------- -->
+                        <!--      Състезание       -->
+                        <!-- --------------------- -->
+                        <div v-if="showMode ==2" class="content-page" style="padding: 0 10px;">
+                            <div class="chat-box-list pt--30">
+                                <!-- списък на участниците -->
+                                <div v-for="(athlete, athlete_idx) in startList">
+                                    <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                         :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                         v-if="checkVisibility(athlete_idx)">
+                                        <!-- показвам всички участници -->
+                                        <div class="inner top-flashlight leftside light-xl">
+                                            <!-- Заглавна част - параметри на въпроса -->
+                                            <div class="chat-section generate-section">
+                                                <div class="chat-content" style="max-width: 100%;">
+                                                    <div class="row">
+                                                        <div class="col-lg-1 col-md-1 col-sm-6 col-2">
+                                                            <h4 class="title">
+                                                                [[ athlete.bib_number ]]
+                                                            </h4>
+                                                        </div>
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-10">
+                                                            <h6 class="title">
+                                                                [[ athlete.name ]]
+                                                            </h6>
+                                                        </div>
+                                                        <div class="col-lg-4 col-md-4 col-sm-4 col-12">
+                                                            [[ athlete.group.name ]] ([[ athlete.group.comment ]])
+
+                                                        </div>
+                                                        <!-- copy -->
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-12 d-flex justify-content-end">
+                                                            <!-- Дисквалификация -->
+                                                            <button class="react-btn btn-default btn-small btn-border bg-color-danger button-margins"
+                                                                    style="font-size: 10px;" v-if="athlete.status == 0"
+                                                                    @click="setStatus(athlete_idx, 1)">
+                                                                <span>&nbspДисквалификация&nbsp</span>
+                                                            </button>
+                                                            <button class="react-btn btn-default btn-small btn-border  button-margins"
+                                                                    style="color: red; border-color: #5c0000d4; font-size: 10px;"
+                                                                    v-if="athlete.status == 1" @click="setStatus(athlete_idx, 0)">
+                                                                <span>&nbspДисквалификация&nbsp</span>
+                                                            </button>
+                                                            <span v-if="(athlete.status == 1)||(athlete.status == 0)">&nbsp;</span>
+
+                                                            <!-- Нагоре -->
+                                                            <button class="react-btn btn-default btn-small btn-border"
+                                                                    v-if="(athlete.status == 2)&&upEnable(athlete_idx)"
+                                                                    @click="swapNums(athlete_idx, athlete_idx-1)">
+                                                                <i class="feather-chevrons-up" style="margin-left: -6px;"></i>
+                                                            </button>
+                                                            <span v-if="(athlete.status == 2)&&upEnable(athlete_idx)">&nbsp;</span>
+
+                                                            <!-- Надолу -->
+                                                            <button class="react-btn btn-default btn-small btn-border"
+                                                                    v-if="(athlete.status == 2)&&downEnable(athlete_idx)"
+                                                                    @click="swapNums(athlete_idx, athlete_idx+1)">
+                                                                <i class="feather-chevrons-down" style="margin-left: -6px;"></i>
+                                                            </button>
+                                                            <span v-if="(athlete.status == 2)&&downEnable(athlete_idx)">&nbsp;</span>
+
+                                                            <!-- Финиширащ -->
+                                                            <button class="react-btn btn-default btn-small btn-border bg-color-warning button-margins"
+                                                                    style="font-size: 10px;"
+                                                                    v-if="athlete.status == 2"
+                                                                    @click="setStatus(athlete_idx, 1)">
+                                                                <span>&nbspФиниширащ&nbsp</span>
+                                                            </button>
+                                                            <button class="react-btn btn-default btn-small btn-border button-margins"
+                                                                    style="color: warning; border-color: rgb(235 169 49 / 83%); font-size: 10px;"
+                                                                    v-if="athlete.status == 1"
+                                                                    @click="setStatus(athlete_idx, 2)">
+                                                                <span>&nbspФиниширащ&nbsp</span>
+                                                            </button>
+                                                            <span v-if="(athlete.status == 1)||(athlete.status == 2)">&nbsp;</span>
+
+                                                            <!-- Финал -->
+                                                            <button class="react-btn btn-default btn-small btn-border bg-color-success button-margins"
+                                                                    style="font-size: 12px;"
+                                                                    v-if="athlete.status == 3"
+                                                                    @click="setStatus(athlete_idx, 2)">
+                                                                <span>&nbspФинал</span>
+                                                            </button>
+                                                            <button class="react-btn btn-default btn-small btn-border button-margins"
+                                                                    style="color: green; border-color: #013401; font-size: 12px;"
+                                                                    v-if="athlete.status == 2"
+                                                                    @click="setStatus(athlete_idx, 3)">
+                                                                <span>&nbspФинал</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-lg-1 col-md-1 col-sm-6 col-2">
+                                                            <h5 class="title">
+                                                                [[ athlete.user ]]&nbsp;
+                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                   @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                            </h5>
+                                                        </div>
+                                                    </div>
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- --------------------- -->
+                        <!--      Класиране        -->
+                        <!-- --------------------- -->
+                        <div v-if="showMode == 3" class="content-page">
+                            <div class="chat-box-list pt--30">
+                                <!-- --------------------------- -->
+                                <!--  Общо за цялото състезание  -->
+                                <!-- --------------------------- -->
+
+                                <!--  Статистика - показва се винаги  -->
+                                <div class="chat-box author-speech bg-flashlight"
+                                     style="padding-bottom: 0px; margin-top: 50px;">
+                                    <div class="inner">
+                                        <div class="chat-section">
+                                            <div class="chat-content">
+                                                <h5 class="title">За всички категории</h5>
+                                                <div class="row row--15">
+                                                    <div class="col-lg-12">
+                                                        <div class="rainbow-compare-table style-1">
+                                                            <table class="table-responsive">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th></th>
+                                                                        <th>Общо:</th>
+                                                                        <th>Мъже</th>
+                                                                        <th>Жени</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Регистрирани</td>
+                                                                        <td>[[ count.reg_male+count.reg_female ]]</td>
+                                                                        <td>[[ count.reg_male ]]</td>
+                                                                        <td>[[ count.reg_female ]]</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Стартиранли</td>
+                                                                        <td>[[ count.started_male+count.started_female ]]</td>
+                                                                        <td>[[ count.started_male ]]</td>
+                                                                        <td>[[ count.started_female ]]</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>Финиширали</td>
+                                                                        <td>[[ count.fin_male+count.fin_female ]]</td>
+                                                                        <td>[[ count.fin_male ]]</td>
+                                                                        <td>[[ count.fin_female ]]</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--  Списък - показва се ако не е зададено групиране по категории и не е зададено групиране по пол -->
+                                <div v-if="final_show_mode==3">
+                                    <div v-for="(athlete, athlete_idx) in startList">
+                                        <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                             :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                             v-if="(orderShowAthlete(athlete_idx) && ((orderShow3 && (athlete.num<4)) || (!orderShow3)))">
+                                            <!-- показвам всички участници -->
+                                            <div class="inner top-flashlight leftside light-xl">
+                                                <!-- Заглавна част -->
+                                                <div class="chat-section generate-section">
+                                                    <div class="chat-content" style="max-width: 100%;">
+                                                        <div class="row">
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.num ]]
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-2">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.result_time ]]&nbsp;
+                                                                    <button data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                       @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-refresh-cw"></i></button>
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.bib_number ]]
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.name ]]
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.group.name ]] ([[ athlete.group.comment ]] -
+                                                                    <span v-if="athlete.gender">мъже</span>
+                                                                    <span v-if="!athlete.gender">жени</span>)
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.user ]]&nbsp;
+                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                   @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                   </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--  Списъци мъже и жени - показва се ако не е зададено групиране по категории и е зададено групиране по пол -->
+                                <div v-if="final_show_mode==1">
+                                    <h4>Мъже</h4>
+                                    <div v-for="(athlete, athlete_idx) in startList">
+                                        <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                             :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                             v-if="(orderShowAthlete(athlete_idx) && ((orderShow3 && (athlete.num<4)) || (!orderShow3))) && (athlete.gender)">
+                                            <!-- показвам всички участници мъже-->
+                                            <div class="inner top-flashlight leftside light-xl">
+                                                <!-- Заглавна част -->
+                                                <div class="chat-section generate-section">
+                                                    <div class="chat-content" style="max-width: 100%;">
+                                                        <div class="row">
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.num ]]
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-2">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.result_time ]]&nbsp;
+                                                                    <button data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                       @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-refresh-cw"></i></button>
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.bib_number ]]
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.name ]]
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-3">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.group.name ]] ([[ athlete.group.comment ]])
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.user ]]&nbsp;
+                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                   @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                   </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h4 style="margin-top: 30px;">Жени</h4>
+                                    <div v-for="(athlete, athlete_idx) in startList">
+                                        <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                             :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                             v-if="(orderShowAthlete(athlete_idx) && ((orderShow3 && (athlete.num<4)) || (!orderShow3))) && (!athlete.gender)">
+                                            <!-- показвам всички участници мъже-->
+                                            <div class="inner top-flashlight leftside light-xl">
+                                                <!-- Заглавна част -->
+                                                <div class="chat-section generate-section">
+                                                    <div class="chat-content" style="max-width: 100%;">
+                                                        <div class="row">
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.num ]]
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-2 color-Ok">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.result_time ]]&nbsp;
+                                                                    <button data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                       @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-refresh-cw"></i></button>
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-1 color-Ok" style="text-align: right;">
+                                                                <h5 class="title color-Ok">
+                                                                    [[ athlete.bib_number ]]
+                                                                </h5>
+                                                            </div>
+                                                            <div class="col-3 color-Ok">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.name ]]
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-3 color-Ok">
+                                                                <h6 class="title color-Ok">
+                                                                    [[ athlete.group.name ]] ([[ athlete.group.comment ]])
+                                                                </h6>
+                                                            </div>
+                                                            <div class="col-1" style="text-align: right;">
+                                                                <h5 class="title" v-if="athlete.status>0">
+                                                                    [[ athlete.user ]]&nbsp;
+                                                                <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                   @click="editAthlete(athlete_idx)">
+                                                                    <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                   </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- --------------------------- -->
+                                <!--        По категории         -->
+                                <!-- --------------------------- -->
+                                <div v-for="(group, group_idx) in groupsList" v-if="groupByCat">
+                                    <!-- Групата се показва само ако не е празна -->
+                                    <div v-if="(group.reg_male+group.reg_female)>0">
+
+                                        <!-- Статистика -->
+                                        <div class="chat-box author-speech bg-flashlight"
+                                             style="padding-bottom: 0px; margin-top: 50px;">
+                                            <div class="inner">
+                                                <div class="chat-section">
+                                                    <div class="chat-content">
+                                                        <h5 class="title">Категория "[[ group.name ]] ([[ group.comment ]])"</h5>
+                                                        <div class="row row--15">
+                                                            <div class="col-lg-12">
+                                                                <div class="rainbow-compare-table style-1">
+                                                                    <table class="table-responsive">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th></th>
+                                                                                <th>Общо:</th>
+                                                                                <th>Мъже</th>
+                                                                                <th>Жени</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>Регистрирани</td>
+                                                                                <td>[[ group.reg_male+group.reg_female ]]</td>
+                                                                                <td>[[ group.reg_male ]]</td>
+                                                                                <td>[[ group.reg_female ]]</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Стартиранли</td>
+                                                                                <td>[[ group.started_male+group.started_female ]]</td>
+                                                                                <td>[[ group.started_male ]]</td>
+                                                                                <td>[[ group.started_female ]]</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>Финиширали</td>
+                                                                                <td>[[ group.fin_male+group.fin_female ]]</td>
+                                                                                <td>[[ group.fin_male ]]</td>
+                                                                                <td>[[ group.fin_female ]]</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Списък на всички участници от категорията без групиране по пол -->
+                                        <div v-if="!groupByGender">
+                                            <div v-for="(athlete, athlete_idx) in startList">
+                                                <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                                     :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                                     v-if="orderShowAthlete(athlete_idx) && (athlete.group.id == group.id) &&
+                                                           ((orderShow3 && (athlete.num<4)) || (!orderShow3))">
+                                                    <div class="inner top-flashlight leftside light-xl">
+                                                        <!-- Заглавна част -->
+                                                        <div class="chat-section generate-section">
+                                                            <div class="chat-content" style="max-width: 100%;">
+                                                                <div class="row">
+                                                                    <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.num ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md- col-sm-6 col-2">
+                                                                        <h5 class="title color-Ok">
+                                                                            [[ athlete.result_time ]]&nbsp;
+                                                                            <button data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                               @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-refresh-cw"></i></button>
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
+                                                                        <h5 class="title color-Ok">
+                                                                            [[ athlete.bib_number ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-6 col-md-6 col-sm-5 col-6">
+                                                                        <h6 class="title color-Ok">
+                                                                            [[ athlete.name ]]
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.user ]]&nbsp;
+                                                                            <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                               @click="editAthlete(athlete_idx)">
+                                                                                <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                           </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- списък на участниците в тази категория групирани по мъже/жени -->
+                                        <div v-if="groupByGender">
+                                            <h4 v-if="group.fin_male>0">Мъже</h4>
+                                            <div v-for="(athlete, athlete_idx) in startList">
+                                                <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                                     :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                                     v-if="orderShowAthlete(athlete_idx) && athlete.gender &&
+                                                           (athlete.group.id == group.id) &&
+                                                           ((orderShow3 && (athlete.num<4)) || (!orderShow3))">
+                                                    <div class="inner top-flashlight leftside light-xl">
+                                                        <!-- Заглавна част -->
+                                                        <div class="chat-section generate-section">
+                                                            <div class="chat-content" style="max-width: 100%;">
+                                                                <div class="row">
+                                                                    <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.num ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md- col-sm-6 col-2">
+                                                                        <a>
+                                                                        <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.result_time ]]&nbsp;
+                                                                            <button data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                               @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-refresh-cw"></i></button>
+                                                                        </h5>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
+                                                                        <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.bib_number ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-6 col-md-6 col-sm-5 col-6">
+                                                                        <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.name ]]
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.user ]]&nbsp;
+                                                                        <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                           @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                           </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <h4 v-if="group.fin_female>0">Жени</h4>
+                                            <div v-for="(athlete, athlete_idx) in startList">
+                                                <div class="chat-box ai-speech bg-flashlight mt--10" style="padding: 10px;"
+                                                     :id="'r_'+athlete.bib_number"  tabindex="-1"
+                                                     v-if="orderShowAthlete(athlete_idx) && (!athlete.gender) &&
+                                                           (athlete.group.id == group.id) &&
+                                                           ((orderShow3 && (athlete.num<4)) || (!orderShow3))">
+                                                    <div class="inner top-flashlight leftside light-xl">
+                                                        <!-- Заглавна част -->
+                                                        <div class="chat-section generate-section">
+                                                            <div class="chat-content" style="max-width: 100%;">
+                                                                <div class="row">
+                                                                    <div class="col-lg-1 col-md-1 col-sm-6 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.num ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md- col-sm-6 col-2">
+                                                                        <a>
+                                                                        <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.result_time ]]&nbsp;
+                                                                            <button data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                                                               @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-refresh-cw"></i></button>
+                                                                        </h5>
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md-2 col-sm-6 col-2" style="text-align: right;">
+                                                                        <h5 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.bib_number ]]
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div class="col-lg-6 col-md-6 col-sm-5 col-6">
+                                                                        <h6 class="title" :class="{'color-Ok':athlete.status>0, 'color-No':athlete.status==0,}">
+                                                                            [[ athlete.name ]]
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div class="col-lg-1 col-md-1 col-sm-1 col-1" style="text-align: right;">
+                                                                        <h5 class="title" v-if="athlete.status>0">
+                                                                            [[ athlete.user ]]&nbsp;
+                                                                        <a data-bs-toggle="modal" data-bs-target="#showPhotoModal"
+                                                                           @click="editAthlete(athlete_idx)">
+                                                                            <i class="feather-camera" v-if="countPhotos(athlete.id)>0"></i></a>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                           </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+<!-- ************************************************************************* -->
+                        <!-- Долна лента с бутони  -->
+                        <div class="rbt-static-bar collapse-width">
+                            <!-- --------------------- -->
+                            <!--      Регистрация      -->
+                            <!-- --------------------- -->
+                            <ul v-if="showMode ==0" class="staticbar-btn-grp d-md-flex">
+                                <li>
+                                    <button class="react-btn btn-default btn-small btn-border"
+                                            style="color: green; border-color: #013401;"
+                                            data-bs-toggle="modal" data-bs-target="#editAthleteModal"
+                                            @click="newAthlete()">
+                                        <i class="feather-check"></i><span>&nbspДобави нов участник</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="react-btn btn-default btn-small btn-border"
+                                            style="color: red; border-color: #5c0000d4;" @click="closeRegistration()"
+                                            v-if="sysParams.status==0">
+                                        <i class="feather-x"></i><span>&nbspКрай на регистрацията</span>
+                                    </button>
+                                </li>
+                            </ul>
+                            <!-- --------------------- -->
+                            <!--      Състезание       -->
+                            <!-- --------------------- -->
+                            <ul v-if="(showMode == 2)&&(sysParams.status==2)" class="staticbar-btn-grp d-md-flex">
+                                <li>
+                                    <button class="react-btn btn-default btn-small btn-border"
+                                            style="color: red; border-color: #5c0000d4;"
+                                            data-bs-toggle="modal" data-bs-target="#stopCompetitionModal">
+                                        <i class="feather-x"></i><span>&nbspКрай на състезанието</span>
+                                    </button>
+                                </li>
+                            </ul>
+                            <!-- Превключвател свтла/тъмнa тема  -->
+                            <div id="my_switcher" class="my_switcher">
+                                <ul>
+                                    <li>
+                                        <a href="javascript: void(0);" data-theme="light" class="setColor light">
+                                            <img src="{% static 'assets/images/light/switch/sun-01.svg' %}" alt="Sun images"><span title="Light Mode"> Light</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript: void(0);" data-theme="dark" class="setColor dark">
+                                            <img src="{% static 'assets/images/light/switch/vector.svg' %}" alt="Vector Images"><span title="Dark Mode">
+                                        Dark</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+<!-- ************************************************************************* -->
+                    <!-- Dashboard Right Content -->
+                    <!-- --------------------- -->
+                    <!--      Регистрация      -->
+                    <!-- --------------------- -->
+                    <div  v-if="showMode ==0" class="rbt-right-side-panel popup-dashboardright-section">
+                        <div class="right-side-top">
+                            <h5 class="title">Регистрирани участници:</h5>
+                            <span>Oбщо [[ startList.length ]]</span>
+                        </div>
+                        <div class="right-side-bottom mb--200">
+                            <h5 class="title">По категории:</h5><br>
+                            <div class="chat-history-section" style="padding-top: 10px; padding-bottom: 10px;"
+                                 v-for="(group, idx) in groupsList">
+                                <h6 class="title">[[group.name]]</h6>
+                                <span>Регистрирани участници: [[ countAthletesInGroup(group.id) ]]</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- --------------------- -->
+                    <!--      Състезание       -->
+                    <!-- --------------------- -->
+                    <div v-if="showMode ==2" class="rbt-right-side-panel popup-dashboardright-section">
+                        <div class="right-side-top">
+                            <h2 class="title">[[formatTimer(timerValue)]]</h2>
+                        </div>
+                        <div class="right-side-bottom mb--200">
+                            <div class="chat-history-section">
+                                <h6 class="title">Търсене:</h6>
+                                <ul class="chat-history-list">
+                                    <li class="history-box active">
+                                        <label for="searchBibNumber">Стартов номер: </label>
+                                        <input type="text" class="form-control"
+                                               id="searchBibNumber" maxlength="20" size="20"
+                                               v-model="lookupNumber" @input="focusDivById('r_'+lookupNumber)">
+                                    </li>
+                                </ul>
+                                <div class="rbt-sm-separator"></div>
+                                <h6 class="title">Покажи:</h6>
+                                <ul class="chat-history-list">
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterShowAll" type="checkbox"
+                                               :checked="filter.waitingToFinish && filter.disqualified && filter.finished && filter.registered"
+                                               @click="checkAllFilters()">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterShowAll"> всички </label>
+                                    </li>
+                                    <li class="rbt-sm-separator"></li>
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterFinished" type="checkbox"
+                                               v-model="filter.finished">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterFinished">финиширали</label>
+                                    </li>
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterWaitingToFinish" type="checkbox"
+                                               v-model="filter.waitingToFinish">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterWaitingToFinish" >наближаващи финала</label>
+                                    </li>
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterRegistered" type="checkbox"
+                                               v-model="filter.registered">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterRegistered">по трасето</label>
+                                    </li>
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="filterDisqualified" type="checkbox"
+                                               v-model="filter.disqualified">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="filterDisqualified">дисквалифицирани</label>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- --------------------- -->
+                    <!--      Класиране        -->
+                    <!-- --------------------- -->
+                    <div  v-if="showMode ==3" class="rbt-right-side-panel popup-dashboardright-section">
+                        <div class="right-side-bottom mb--200">
+                            <div class="chat-history-section">
+                                <h6 class="title">Групирай по:</h6>
+                                <ul class="chat-history-list">
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="groupByGender" type="checkbox"
+                                               v-model="groupByGender" @click="updateGroupStats()">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="groupByGender"> мъже/жени </label>
+                                    </li>
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="groupByCat" type="checkbox"
+                                               v-model="groupByCat">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="groupByCat"> категории </label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="chat-history-section">
+                                <h6 class="title">Покажи:</h6>
+                                <ul class="chat-history-list">
+                                    <li class="history-box active">
+                                        <input class="custom-control-input" id="orderShow3" type="checkbox"
+                                               v-model="orderShow3">
+                                        <label class="custom-control-label d-flex align-items-center"
+                                               for="orderShow3"> само първите 3 </label>
+                                    </li>
+                                    <li>режим: [[ final_show_mode ]]</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block modals %}
+        <!-- Данни за състезател -->
+        <div id="editAthleteModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content wrapper top-flashlight leftside light-xl">
+                    <h5 class="title" v-if="c_athlete.id==0">Нов участник</h5>
+                    <h5 class="title" v-else>Редактиране на данни за участник</h5>
+                    <!-- Име и фамилия -->
+                    <div class="row">
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12 col-12">
+                            <button type="button" class="react-btn btn-default btn-small btn-border dropdown-toggle"
+                                    data-bs-toggle="dropdown" aria-expanded="false" >
+                                Група/категория: [[c_athlete.group.name]] ([[c_athlete.group.comment]]) <i class="feather-more-vertical"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li v-for="(group, group_idx) in groupsList">
+                                    <a class="dropdown-item color-level-1" @click="changeGroup(group_idx)">[[group.name]] ([[group.comment]])</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-lg-4 col-md-4 col-sm-12 col-4">
+                            <label for="editBibNumber">Стартов номер: </label>
+                            <input type="text" class="form-control"
+                                   id="editBibNumber" maxlength="20" size="20" v-model="c_athlete.bib_number">
+                        </div>
+                        <div class="form-group col-lg-8 col-md-8 col-sm-12 col-8">
+                            <label for="editAthleteName">Име и фамилия: </label>
+                            <input type="text" class="form-control"
+                                   id="editAthleteName" maxlength="80" size="20" v-model="c_athlete.name">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="custom-control col-lg-1 align-items-end">
+                            Пол:
+                        </div>
+                        <div class="custom-control custom-checkbox col-lg-2 align-items-end cb-ok-align">
+                            <input class="custom-control-input" id="editGM" type="checkbox" v-model="c_athlete.gender">
+                            <label class="custom-control-label d-flex align-items-center" for="editGM">мъж</label>
+                        </div>
+                        <div class="custom-control custom-checkbox col-lg-2 align-items-end cb-ok-align">
+                            <input class="custom-control-input" id="editGF" type="checkbox"
+                                   :checked="!c_athlete.gender"
+                                   @click="c_athlete.gender=!c_athlete.gender">
+                            <label class="custom-control-label d-flex align-items-center" for="editGF">жена</label>
+                        </div>
+                        <div class="custom-control col-lg-1 align-items-end"></div>
+                        <div class="form-group col-lg-4 col-md-4 col-sm-12 col-4" v-if="showMode == 3">
+                            <label for="editTime">Време: </label>
+                            <input type="text" class="form-control"
+                                   id="editTime" maxlength="20" size="20" v-model="c_athlete.result_time">
+                        </div>
+                    </div>
+
+                    <!-- бутон горе ляво - затваряне на прозореца -->
+                    <button class="close-button" data-bs-dismiss="modal">
+                       <i class="feather-x"></i>
+                   </button>
+                    <!-- footer - бутони за отказ/запис -->
+                    <div class="row mt--20">
+                       <div class="col-lg-2 col-md-2">
+                       </div>
+                        <div class="col-lg-10 col-md-10 col-sm-10 col-12" style="text-align: right;">
+                            <div class="btn-grp">
+                                <button class="react-btn btn-default btn-small btn-border bg-color-danger"
+                                       data-bs-dismiss="modal">
+                                   <i class="feather-x"></i><span>&nbsp;Откажи</span>
+                                </button>
+                                &nbsp
+                                <button class="react-btn btn-default btn-small btn-border bg-color-success"
+                                       data-bs-dismiss="modal" @click="saveAthlete()">
+                                   <i class="feather-check"></i><span>&nbsp;Запази</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </div>
+        <!-- Диалог за изтриване на състезател -->
+        <div id="deleteAthleteModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content wrapper top-flashlight leftside light-xl">
+                    <button class="close-button" data-bs-dismiss="modal">
+                        <i class="feather-x"></i>
+                    </button>
+                    <h5 class="title a">ВНИМАНИЕ!</h5>
+                    <p style="display: flex; align-items: center;">Участник [[ c_athlete.name ]] и ВСИЧКИ свъразани с него данни ще бъдат премахнати от
+                        базата данни. Моля, потвърдете!</p>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-12"  style="text-align: right;">
+                            <button class="react-btn btn-default btn-small btn-border bg-color-success"
+                                   data-bs-dismiss="modal">
+                               <i class="feather-x"></i><span>&nbsp;Откажи</span>
+                            </button>
+                            &nbsp
+                            <button class="react-btn btn-default btn-small btn-border bg-color-danger"
+                                    data-bs-dismiss="modal"
+                                    @click="deleteAthlete()">
+                               <i class="feather-check"></i><span>&nbsp;Изтрий</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Диалог за прекратяване на състезанието -->
+        <div id="stopCompetitionModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content wrapper top-flashlight leftside light-xl">
+                    <button class="close-button" data-bs-dismiss="modal">
+                        <i class="feather-x"></i>
+                    </button>
+                    <h5 class="title a">ВНИМАНИЕ!</h5>
+                    <p style="display: flex; align-items: center;">Всички незавршили състезатели ще бъдат дисквалифицирани.
+                        Моля, потвърдете прекратяване на състезанието!</p>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-12"  style="text-align: right;">
+                            <button class="react-btn btn-default btn-small btn-border bg-color-success"
+                                   data-bs-dismiss="modal">
+                               <i class="feather-x"></i><span>&nbsp;Откажи</span>
+                            </button>
+                            &nbsp
+                            <button class="react-btn btn-default btn-small btn-border bg-color-danger"
+                                    data-bs-dismiss="modal"
+                                    @click="closeCompetition()">
+                               <i class="feather-check"></i><span>&nbsp;Потвърди</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Диалог за показване на снимки -->
+        <div id="showPhotoModal" class="modal rbt-modal-box like-modal fade" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content wrapper top-flashlight leftside light-xl">
+                    <button class="close-button" data-bs-dismiss="modal">
+                        <i class="feather-x"></i>
+                    </button>
+                    <h5 class="title a">Фотофиниш</h5>
+                    <div style="display: flex; align-items: center;" v-for="photo in photoList">
+                        <img :src="photo.image" v-if="photo.athlete == c_athlete.id">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}
+
+{% block page_script %}
+    <script src="{% static 'assets/js/race.js' %}"></script>
+{% endblock %}
