@@ -97,19 +97,19 @@ while race_api.sysParams['status'] < 3:
             # print('err!!!!')
             break
 
-        # Вземи височината на кадъра!
+        # Вземаме височината на кадъра
         height, width = frame.shape[:2]
         line_start = (sx, 0)
         line_end = (ex, height)
 
-        # Начертай дебела червена линия:
+        # Начертаваме дебела червена линия:
         cv2.line(frame, line_start, line_end, (0, 0, 255), thickness)
 
         # --- YOLO детектиране ---
         results = model(frame)
         detections = results[0].boxes
 
-        # Събирай само хора, [x1, y1, x2, y2, conf]
+        # Събираме само хора, [x1, y1, x2, y2, conf]
         count = 0
         people_dets = []
         for box in detections:
@@ -119,10 +119,10 @@ while race_api.sysParams['status'] < 3:
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
                 conf = float(box.conf[0])
                 people_dets.append([x1, y1, x2, y2, conf])
-        # Изписва броя на хората
+        # Изписваме броя на хората
         h, w = frame.shape[:2]
 
-        # Форматирай за SORT
+        # Форматираме за SORT
         dets_for_sort = np.array(people_dets)
         if len(dets_for_sort) == 0:
             dets_for_sort = np.empty((0, 5))
